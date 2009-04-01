@@ -8,7 +8,7 @@ public class StackSegment extends Memory {
 		super(size, start);
 		// TODO Auto-generated constructor stub
 	}
-	private void throwOverflowError() {
+	protected void throwOverflowError() {
 		System.out.println("Your stack segment memory is full");
 	}
 }

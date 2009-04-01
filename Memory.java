@@ -1,6 +1,6 @@
 import java.util.*;
 public class Memory {
-	protected Object[] mem;
+	protected Integer[] mem;
 	protected int size;
 	protected int start;
 	protected int current;
@@ -8,7 +8,7 @@ public class Memory {
 	 * Size in bytes (divisible by 4 so word aligned)
 	 */
 	public Memory(int size, int start) {
-		mem = new Object[(size / 4)];
+		mem = new Integer[(size / 4)];
 		for(int i = 0; i < mem.length; i++) {
 			mem[i] = null;
 		}
@@ -17,18 +17,18 @@ public class Memory {
 		current = start;
 	}
 	public Object get(Integer loc) {
-		return mem[loc-start];
+		return mem[getRealLoc(loc)];
 	}
 	public Object get(String s) {
 		return get(Integer.parseInt(s, 16));
 	}
-	public void set(Integer loc, Object o) {
-		mem[loc-start] = o;
+	public void set(Integer loc, Integer o) {
+		mem[getRealLoc(loc)] = o;
 	}
-	public void set(String s, Object o) {
+	public void set(String s, Integer o) {
 		set(Integer.parseInt(s, 16), o);
 	}
-	public void add(Object o) {
+	public void add(Integer o) {
 		for(int i = 0; i < mem.length; i++) {
 			if(mem[i] != null) continue;
 			else {
@@ -38,8 +38,26 @@ public class Memory {
 		}
 		throwOverflowError();
 	}
-	private void throwOverflowError() {
+	protected void throwOverflowError() {
 		System.out.println("Overflow error");
+	}
+	protected int getRealLoc(int loc) {
+		return (loc-start)/4;
+	}
+	// Bits going from 0 - 31 for a 32 bit int
+	// start < end
+	public int getBits(int loc, int start, int end) {
+		if(start > end) {
+			int temp = end;
+			end = start;
+			start = temp;
+		}
+		int max = 0xFFFF; //Integer.parseInt("11111111111111111111111111111111", 2);
+		int val = mem[getRealLoc(loc)];
+		int mask = max >> (31-end);
+		mask = mask << start;
+		val = val & mask;
+		return val >> start;
 	}
 	/*
 	private boolean checkLength() {

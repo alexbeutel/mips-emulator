@@ -6,7 +6,10 @@ public class DataSegment extends Memory {
 	public DataSegment(int size, int start) {
 		super(size, start);
 	}
-	private void throwOverflowError() {
+	protected void throwOverflowError() {
 		System.out.println("Your static data segment memory is full");
+	}
+	public static void hello() {
+		System.out.println("hi");
 	}
 }

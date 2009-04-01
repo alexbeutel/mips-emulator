@@ -1,6 +1,6 @@
 import java.util.*;
 public class MIPSEmulator {
-	static Scanner in = new Scanner(System.in);
+	static Scanner in;
 	private Register reg;
 	private DataSegment data;
 	private TextSegment instr;
@@ -11,6 +11,8 @@ public class MIPSEmulator {
 		data = new DataSegment();
 		instr = new TextSegment();
 		stack = new StackSegment();
+		in = new Scanner(System.in);
+		loadFile();
 	}
 	
 	//Load instructions and static data from file into data and instr objects
