@@ -17,7 +17,9 @@ public class TextSegment extends Memory {
 	protected void throwOverflowError() {
 		System.out.println("Your text segment memory is full");
 	}
-	public void run(int loc) {
+	
+	//can return values like to quit program
+	public boolean run(int loc) {
 		// Increment PC + 4
 		pc += 4;
 		
@@ -48,5 +50,7 @@ public class TextSegment extends Memory {
 			//COMMANDS!
 			
 		}
+		
+		return false;
 	}
 }

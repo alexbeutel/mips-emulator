@@ -29,11 +29,11 @@ public class MIPSEmulator {
 				if(hasStartedStaticData) {
 					String[] nums = line.split(" ");
 					line = nums[1].substring(2);
-					int val = Integer.parseInt(line);
+					int val = Integer.parseInt(line, 16);
 					data.add((Integer)val);
 				} else {
 					line = line.substring(2);
-					int val = Integer.parseInt(line);
+					int val = Integer.parseInt(line, 16);
 					instr.add((Integer)val);
 				}
 			}

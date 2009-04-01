@@ -9,6 +9,7 @@ public class Register {
 		return r[index];
 	}
 	public void set(int index, Object o) {
+		if(index == 0) return;
 		r[index] = o;
 	}
 }
