@@ -16,11 +16,11 @@ public class Memory {
 		this.start = start;
 		current = start;
 	}
-	public Object get(Integer loc) {
+	public Integer get(Integer loc) {
 		return mem[getRealLoc(loc)];
 	}
-	public Object get(String s) {
-		return get(Integer.parseInt(s, 16));
+	public Integer get(String s) {
+		return get(MIPSEmulator.loadHex(s));
 	}
 	public void set(Integer loc, Integer o) {
 		mem[getRealLoc(loc)] = o;
@@ -52,10 +52,9 @@ public class Memory {
 			end = start;
 			start = temp;
 		}
-		int max = 0xFFFF; //Integer.parseInt("11111111111111111111111111111111", 2);
+		int max = 0xFFFFFFFF; //Integer.parseInt("11111111111111111111111111111111", 2);
 		int val = mem[getRealLoc(loc)];
-		int mask = max >> (31-end);
-		mask = mask << start;
+		int mask = (max >>> (31-end)) & (max << start);
 		val = val & mask;
 		return val >> start;
 	}

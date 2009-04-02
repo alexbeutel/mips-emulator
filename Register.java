@@ -3,7 +3,9 @@ public class Register {
 	public Object[] r;
 	public Register() {
 		r = new Object[31];
-		r[0] = new Integer(0);
+		for(int i = 0; i < r.length; i++)
+			r[i] = new Integer(0);
+		//r[2] = 16;
 	}
 	public Object get(int index) {
 		return r[index];
