@@ -52,7 +52,7 @@ public class Memory {
 			end = start;
 			start = temp;
 		}
-		int max = 0xFFFFFFFF; //Integer.parseInt("11111111111111111111111111111111", 2);
+		int max = 0xFFFFFFFF;
 		int val = mem[getRealLoc(loc)];
 		int mask = (max >>> (31-end)) & (max << start);
 		val = val & mask;

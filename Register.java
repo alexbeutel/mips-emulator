@@ -1,23 +1,17 @@
 import java.util.*;
 public class Register {
-	public Object[] r;
+	public int[] r;
 	public Register() {
-		r = new Object[31];
+		r = new int[31];
 		for(int i = 0; i < r.length; i++)
-			r[i] = new Integer(0);
-		//r[2] = 16;
+			r[i] = 0;
+		r[2] = 16;
 	}
-	public Object get(int index) {
+	public int get(int index) {
 		return r[index];
 	}
-	public int getI(int index) {
-		return (Integer)r[index];
-	}
-	public void set(int index, Object o) {
+	public void set(int index, int o) {
 		if(index == 0) return;
 		r[index] = o;
-	}
-	public void set(int index, int o) {
-		set(index, (Integer)o);
 	}
 }

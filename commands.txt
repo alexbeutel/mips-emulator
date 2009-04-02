@@ -1,4 +1,4 @@
-LB load byte											
+LB load byte											Started but needs work
 LBU load byte unsigned									
 LW load word											
 SB store byte											

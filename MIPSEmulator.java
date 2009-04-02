@@ -17,10 +17,7 @@ public class MIPSEmulator {
 		this.pc = instr.getStart();
 		
 		int callOut = 0;
-		int i = 0;
 		while (callOut != -1) {
-			System.out.print(i + ".  ");
-			i++;
 			callOut = instr.run(this);
 		}
 		System.out.println("DONE");
@@ -34,10 +31,8 @@ public class MIPSEmulator {
 		boolean hasStartedStaticData = false;
 		while(in.hasNextLine()) {
 			line = in.nextLine();
-			//System.out.println(i + ". " + line);
 			if(line.equals("DATA SEGMENT")) {
 				hasStartedStaticData = true;
-				System.out.println("start data segment");
 			} else if(!line.startsWith("0x")) {
 				System.out.println("ERROR on line "+ i + ": " + line);
 			} else {
@@ -54,6 +49,10 @@ public class MIPSEmulator {
 			}
 			i++;
 		}
+	}
+	public int getFromMemory(int start, int offset) {
+		// Fill in, must get from either Data or Stack appropriately
+		return 0;
 	}
 	public static int loadHex(String s) {
 		int full = 0;

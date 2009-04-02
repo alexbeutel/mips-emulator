@@ -7,7 +7,8 @@
 import java.util.*;
 public class TextSegment extends Memory {
 	public TextSegment() {
-		super(2*1024, Integer.parseInt("00400000", 16));
+		// CHECK SIZE & START
+		super(2*1024, 0x00400000);
 	}
 	public TextSegment(int size, int start) {
 		super(size, start);
@@ -26,7 +27,8 @@ public class TextSegment extends Memory {
 		// Increment PC + 4
 		mips.pc += 4;
 		
-		System.out.println(Integer.toHexString(this.get(loc)));
+		System.out.println("0x" + Integer.toHexString(this.get(loc)));
+		//System.out.println(Integer.toBinaryString(this.get(loc)));
 		String cmd = "";
 		//not as clear division of I and J as expected, may need to combine
 		
@@ -39,23 +41,23 @@ public class TextSegment extends Memory {
 			rd = getBits(loc, 11, 15);
 			shamt = getBits(loc, 6, 10);
 			func = getBits(loc, 0, 5);
-			cmd = "rtype" + func;
+			//cmd = "rtype" + func;
 			
 			switch(func) {
 				case 0x20: //add with overflow
-					cmd="add";
-					mips.reg.set(rd, (Integer)mips.reg.get(rs) + (Integer)mips.reg.get(rd));
+					cmd="ADD $"+rd+"=$"+rs+" + $"+rt;
+					mips.reg.set(rd, mips.reg.get(rs) + mips.reg.get(rd));
 				case 12:
 					cmd="syscall";
 					if((Integer)mips.reg.get(2) == 16) {
 						return -1;
 					}
 				case 0x21:
-					cmd="AND";
-					mips.reg.set(rd, mips.reg.getI(rs) & mips.reg.getI(rt));
+					cmd="AND $"+rd+"=$"+rs+" & $"+rt;
+					mips.reg.set(rd, mips.reg.get(rs) & mips.reg.get(rt));
 				case 0x25:
-					cmd="OR";
-					mips.reg.set(rd, mips.reg.getI(rs) | mips.reg.getI(rt));
+					cmd="OR $"+rd+"=$"+rs+" | $"+rt;
+					mips.reg.set(rd, mips.reg.get(rs) | mips.reg.get(rt));
 			}
 			
 			//COMMANDS!
@@ -71,12 +73,14 @@ public class TextSegment extends Memory {
 					cmd = "LUI";
 					mips.reg.set(rt, immed << 16);
 				case 0x8: //ADDI
-					cmd = "ADDI";
-					mips.reg.set(rt, (Integer)mips.reg.get(rs) + immed); //make sure sign extended!
+					cmd = "ADDI $"+rt+"=$"+rs+" + "+immed;
+					mips.reg.set(rt, mips.reg.get(rs) + immed); //make sure sign extended!
 				case 13: //ORI
-					cmd = "ORI";
-					mips.reg.set(rt, mips.reg.getI(rs) | immed); //sign extended?
-				
+					cmd = "ORI $"+rt+"=$"+rs+" | "+immed;
+					mips.reg.set(rt, mips.reg.get(rs) | immed); //sign extended?
+				case 0x20: //LB
+					cmd = "LB $"+rt+" = MEM[$"+rs+" + "+immed+"]";
+					mips.reg.set(rt, mips.getFromMemory(mips.reg.get(rs), immed));
 			}
 			
 			//COMMANDS!
