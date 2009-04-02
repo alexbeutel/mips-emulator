@@ -10,8 +10,14 @@ public class Register {
 	public Object get(int index) {
 		return r[index];
 	}
+	public int getI(int index) {
+		return (Integer)r[index];
+	}
 	public void set(int index, Object o) {
 		if(index == 0) return;
 		r[index] = o;
+	}
+	public void set(int index, int o) {
+		set(index, (Integer)o);
 	}
 }

@@ -41,16 +41,22 @@ public class TextSegment extends Memory {
 			func = getBits(loc, 0, 5);
 			cmd = "rtype" + func;
 			
-			if(func == 0x20) { //add with overflow
-				cmd = "add";
-				mips.reg.set(rd, (Integer)mips.reg.get(rs) + (Integer)mips.reg.get(rd));
-			} else if(func == 12) { //Syscall
-				cmd = "syscall";
-				if((Integer)mips.reg.get(2) == 16) {
-					return -1;
-				}
+			switch(func) {
+				case 0x20: //add with overflow
+					cmd="add";
+					mips.reg.set(rd, (Integer)mips.reg.get(rs) + (Integer)mips.reg.get(rd));
+				case 12:
+					cmd="syscall";
+					if((Integer)mips.reg.get(2) == 16) {
+						return -1;
+					}
+				case 0x21:
+					cmd="AND";
+					mips.reg.set(rd, mips.reg.getI(rs) & mips.reg.getI(rt));
+				case 0x25:
+					cmd="OR";
+					mips.reg.set(rd, mips.reg.getI(rs) | mips.reg.getI(rt));
 			}
-			
 			
 			//COMMANDS!
 			
@@ -60,9 +66,17 @@ public class TextSegment extends Memory {
 			immed = getBits(loc, 0, 15);	//	/
 			addr = getBits(loc, 0, 25);		// J-Type
 			
-			if(opcode == 0xF) { //LUI
-				cmd = "lui";
-				mips.reg.set(rt, immed << 16);
+			switch(opcode) {
+				case 0xF: //LUI
+					cmd = "LUI";
+					mips.reg.set(rt, immed << 16);
+				case 0x8: //ADDI
+					cmd = "ADDI";
+					mips.reg.set(rt, (Integer)mips.reg.get(rs) + immed); //make sure sign extended!
+				case 13: //ORI
+					cmd = "ORI";
+					mips.reg.set(rt, mips.reg.getI(rs) | immed); //sign extended?
+				
 			}
 			
 			//COMMANDS!
