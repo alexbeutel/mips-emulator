@@ -15,12 +15,23 @@ public class MIPSEmulator {
 		
 		loadFile();
 		this.pc = instr.getStart();
+	}
+	
+	public void runToCompletion() {
+		int callOut = 0;
+		// -1 means program is done
+		while (callOut != -1) {
+			callOut = instr.run(this);
+		}
+	}
+	public void singleStep() {
+		
+		// Nikhil: modify this function for I/O
 		
 		int callOut = 0;
 		while (callOut != -1) {
 			callOut = instr.run(this);
 		}
-		System.out.println("DONE");
 	}
 	
 	//Load instructions and static data from file into data and instr objects
@@ -64,9 +75,15 @@ public class MIPSEmulator {
 		return full;
 	}
 	public static void main(String[] args) {
-		MIPSEmulator em = new MIPSEmulator();
-		for(int i = 0; i < 10; i++) {
-			System.out.println(i+".");
+		MIPSEmulator m = new MIPSEmulator();
+		
+		//Nikhil, put I/O Code here to determine if single step or not
+		boolean runFull = true;
+		
+		if(runFull) {
+			m.runToCompletion();
+		} else {
+			m.singleStep();
 		}
 
 	}
