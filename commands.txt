@@ -34,4 +34,4 @@ JAL jump and link
 JR jump register										
 MFHI move from HI register								
 MFLO move from LO register								
-SYSCALL (implement syscall code 1,4,5,8,10)				
+SYSCALL (implement syscall code 1,4,5,8,10)				Started, did for 16 (syscall exit)
