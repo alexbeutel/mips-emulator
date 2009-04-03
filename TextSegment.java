@@ -22,10 +22,10 @@ public class TextSegment extends Memory {
 	}
 	
 	//can return values like to quit program
-	public int run(MIPSEmulator mips) {
-		int loc = mips.pc;
+	public int run(MIPSEmulator mips, boolean printCmd) {
+		int loc = mips.reg.pc;
 		// Increment PC + 4
-		mips.pc += 4;
+		mips.reg.pc += 4;
 		
 		System.out.println("0x" + Integer.toHexString(this.get(loc)));
 		//System.out.println(Integer.toBinaryString(this.get(loc)));
@@ -87,7 +87,7 @@ public class TextSegment extends Memory {
 			
 		}
 		
-		if(!cmd.equals("")) System.out.println(cmd);
+		if(!cmd.equals("") && printCmd) System.out.println(cmd);
 		return 0;
 	}
 }

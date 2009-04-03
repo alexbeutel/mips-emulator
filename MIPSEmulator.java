@@ -5,7 +5,7 @@ public class MIPSEmulator {
 	public DataSegment data;
 	public TextSegment instr;
 	public StackSegment stack;
-	public int pc;
+	//public int pc;
 	public MIPSEmulator() {
 		reg = new Register();
 		data = new DataSegment();
@@ -14,14 +14,14 @@ public class MIPSEmulator {
 		in = new Scanner(System.in);
 		
 		loadFile();
-		this.pc = instr.getStart();
+		reg.pc = instr.getStart();
 	}
 	
 	public void runToCompletion() {
 		int callOut = 0;
 		// -1 means program is done
 		while (callOut != -1) {
-			callOut = instr.run(this);
+			callOut = instr.run(this, true);
 		}
 	}
 	public void singleStep() {
@@ -30,7 +30,7 @@ public class MIPSEmulator {
 		
 		int callOut = 0;
 		while (callOut != -1) {
-			callOut = instr.run(this);
+			callOut = instr.run(this, true);
 		}
 	}
 	
