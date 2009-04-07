@@ -89,6 +89,9 @@ public class MIPSEmulator {
 			else if (cmd == 'q') {
 				isDone = true;
 				isValid = true;
+			} else if (cmd == 'h' || cmd == '?'){
+				outputHelp();
+				isValid = true;
 			} else if (cmd == 's') {
 				String instructionNum = instruction.substring(2);
 				try{
@@ -158,6 +161,12 @@ public class MIPSEmulator {
 		else
 			return false;
 		return true;
+	}
+	private void outputHelp() {
+		out("p [#/HI/LO/PC/all] - print registers either specific #, hi, lo, pc, or all registers");
+		out("d # - print memory at specific location");
+		out("s # - execute next # instructions");
+		out("q - quit");
 	}
 	private void invalidCommand() {
 		out("Sorry you typed in an invalid command");
