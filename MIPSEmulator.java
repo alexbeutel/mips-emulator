@@ -97,13 +97,18 @@ public class MIPSEmulator {
 				outputHelp();
 				isValid = true;
 			} else if (cmd == 's') {
-				String instructionNum = instruction.substring(2);
-				try{
-					moveForward = Integer.parseInt(instructionNum);
-					isValid = true;
-				} catch (NumberFormatException e) {
+				if(instruction.length() <= 2) {
 					moveForward = 0;
 					isValid = false;
+				} else {
+				String instructionNum = instruction.substring(2);
+					try{
+						moveForward = Integer.parseInt(instructionNum);
+						isValid = true;
+					} catch (NumberFormatException e) {
+						moveForward = 0;
+						isValid = false;
+					}
 				}
 			}
 			
@@ -137,6 +142,7 @@ public class MIPSEmulator {
 	}
 	
 	private boolean dInstruction(String instruction) {
+		if(instruction.length() <= 2) return false;
 		String address = instruction.substring(2);
 		int location = 0;
 		try{
@@ -149,6 +155,7 @@ public class MIPSEmulator {
 	}
 	
 	private boolean pInstruction(String instruction) {
+		if(instruction.length() <= 2) return false;
 		String spec = instruction.substring(2);
 		int loc = 0;
 		boolean isInt = true;
