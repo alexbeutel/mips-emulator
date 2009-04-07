@@ -52,22 +52,105 @@ public class MIPSEmulator {
 		return ret;
 	}
 	
-	public void runToCompletion() {
+	private void runToCompletion() {
 		int callOut = 0;
 		// -1 means program is done
 		while (callOut != -1) {
-			callOut = instr.run(this, true);
+			callOut = instr.run(this, false);
 		}
 	}
+	
 	public void singleStep() {
-		
-		// Nikhil: modify this function for I/O
-		
 		int callOut = 0;
-		while (callOut != -1) {
-			callOut = instr.run(this, true);
+		boolean isDone = false;
+		boolean isValid = false;
+		int moveForward = 0;
+		char cmd;
+		while(!isDone) {
+			isDone = false;
+			callOut = 0;
+			moveForward = 0;
+			isValid = false;
+			
+			String instruction = getUserInput("Please type your single step instruction: ").toLowerCase();
+			if(instruction.length() == 0) {
+				invalidCommand();
+				continue;
+			}
+			cmd = instruction.charAt(0);
+			
+			if(cmd == 'p')
+				isValid = pInstruction(instruction);
+			else if (cmd == 'd')
+				isValid = dInstruction(instruction);
+			else if (cmd == 'q') {
+				isDone = true;
+				isValid = true;
+			} else if (cmd == 's') {
+				String instructionNum = instruction.substring(2);
+				try{
+					moveForward = Integer.parseInt(instructionNum);
+				} catch (NumberFormatException e) {
+					moveForward = 0;
+					isValid = false;
+				}
+			}
+			
+			if(!isValid)
+				invalidCommand();
+			
+			int i = 0;
+			while(i < moveForward && !isDone) {
+				i++;
+				callOut = instr.run(this, true);
+				if (callOut == -1)
+					isDone = true;
+			}
+			/*
+			//iterate as many times as specified (once unless otherwise specified)
+			for (int i = 0; i < moveForward; i++) {
+				callOut = instr.run(this, true);
+				if (callOut == -1) {
+					isDone = true;
+					break;
+				}
+			}
+			*/
 		}
 	}
+	private boolean dInstruction(String instruction) {
+		String address = instruction.substring(2);
+		int location = 0;
+		try{
+			location = loadHex(address);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		System.out.println("MEM[ " + location + " ] = " + getFromMemory(location, 0));
+		return true;
+	}
+	
+	private boolean pInstruction(String instruction) {
+		String spec = instruction.substring(2);
+		int loc = 0;
+		boolean isInt = true;
+		try{
+			loc = Integer.parseInt(spec);
+		} catch (NumberFormatException e) {
+			isInt = false;
+		}
+		if (spec.equals("all"))
+			reg.printAll();
+		else if( isInt || spec.equals("hi") || spec.equals("lo") || spec.equals("pc"))
+			if (isInt) reg.printReg(loc);
+			else reg.printReg(spec);
+		else
+			return false;
+		return true;
+	}
+	private void invalidCommand() {
+		out("Sorry you typed in an invalid command");
+	}	
 	
 	//Load instructions and static data from file into data and instr objects
 	public void loadFile(String filename) throws IOException {
@@ -101,7 +184,7 @@ public class MIPSEmulator {
 		// Fill in, must get from either Data or Stack appropriately
 		return 0;
 	}
-	public static int loadHex(String s) {
+	public static int loadHex(String s) throws NumberFormatException {
 		int full = 0;
 		for(int i = 0; i < s.length(); i++) {
 			int t = Integer.parseInt(s.charAt(i) + "", 16);
@@ -110,11 +193,13 @@ public class MIPSEmulator {
 		}
 		return full;
 	}
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		// If running from command prompt, can run by: 
 		// java MIPSEmulator a.in
 		// Otherwise will ask for a filename
-		MIPSEmulator m = new MIPSEmulator(args[0]);
+		String s = "";
+		if(args.length > 0)
+			s = args[0];
+		MIPSEmulator m = new MIPSEmulator(s);
 	}
-
 }
