@@ -1,9 +1,22 @@
+Alex:
 LB load byte											Started but needs work
 LBU load byte unsigned									
 LW load word											
 SB store byte											
 SW store word											
 LUI load upper immediate								DONE
+BEQ branch on equal										
+BGEZ branch on greater than equal zero					
+BGTZ branch on greater than zero						
+BLEZ branch on less than equal zero						
+BLTZ branch on less than zero							
+BNE branch on not equal									
+J jump													
+JAL jump and link										
+JR jump register										
+SYSCALL (implement syscall code 1,4,5,8,10)				Started, did for 16 (syscall exit)
+
+Nikhil:
 ADD add													DONE
 ADDI add immediate										DONE
 ADDU add without overflow								
@@ -23,15 +36,5 @@ SLT set less than
 SLTI set less than immediate							
 SLTU set less than unsigned								
 SLTIU set less than immediate unsigned					
-BEQ branch on equal										
-BGEZ branch on greater than equal zero					
-BGTZ branch on greater than zero						
-BLEZ branch on less than equal zero						
-BLTZ branch on less than zero							
-BNE branch on not equal									
-J jump													
-JAL jump and link										
-JR jump register										
 MFHI move from HI register								
 MFLO move from LO register								
-SYSCALL (implement syscall code 1,4,5,8,10)				Started, did for 16 (syscall exit)
