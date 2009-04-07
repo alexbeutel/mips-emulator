@@ -11,6 +11,8 @@ public class MIPSEmulator {
 		instr = new TextSegment();
 		stack = new StackSegment();
 		
+		clrscr();
+		
 		try {
 			if(s.equals(""))
 				s = getUserInput("Name of your file: ");
@@ -73,6 +75,7 @@ public class MIPSEmulator {
 			isValid = false;
 			
 			String instruction = getUserInput("Please type your single step instruction: ").toLowerCase();
+			clrscr();
 			if(instruction.length() == 0) {
 				invalidCommand();
 				continue;
@@ -90,6 +93,7 @@ public class MIPSEmulator {
 				String instructionNum = instruction.substring(2);
 				try{
 					moveForward = Integer.parseInt(instructionNum);
+					isValid = true;
 				} catch (NumberFormatException e) {
 					moveForward = 0;
 					isValid = false;
@@ -118,6 +122,13 @@ public class MIPSEmulator {
 			*/
 		}
 	}
+	
+	private void clrscr() {
+		for(int i = 0; i < 100; i++) {
+			out("\n");
+		}
+	}
+	
 	private boolean dInstruction(String instruction) {
 		String address = instruction.substring(2);
 		int location = 0;
