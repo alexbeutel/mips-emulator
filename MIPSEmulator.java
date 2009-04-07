@@ -36,8 +36,12 @@ public class MIPSEmulator {
 	}
 	
 	//easier to call than sys out
+	public static void out(String s, boolean newLine) {
+		if(newLine) System.out.println(s);
+		else System.out.print(s);
+	}
 	public static void out(String s) {
-		System.out.println(s);
+		out(s, true);
 	}
 	
 	//Helper function for user input
