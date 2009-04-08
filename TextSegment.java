@@ -83,7 +83,8 @@ public class TextSegment extends Memory {
 					mips.reg.set(rd, mips.reg.get(rs) + mips.reg.get(rd));
 					break;
 				case 33:
-					cmd = "ADDU";
+					cmd="ADDU $"+rd+"=$"+rs+" + $"+rt;
+					mips.reg.set(rd, mips.reg.get(rs) + mips.reg.get(rd));
 					break;
 				case 34:
 					cmd = "SUB";
@@ -112,7 +113,7 @@ public class TextSegment extends Memory {
 					cmd = "SLTU";
 					break;
 				default:
-					cmd = "OTHER R INSTRUCTION";
+					cmd = "OTHER R INSTRUCTION -- " + opcode + " -- " + func;
 					break;
 			}
 			
@@ -125,6 +126,21 @@ public class TextSegment extends Memory {
 			addrU = getBits(loc, 0, 25, false);
 			
 			switch(opcode) {
+				case 1:
+					if(rt == 1) {
+						cmd = "BGEZ $"+rs+", "+immed;
+						if(mips.reg.get(rs) >= 0) {
+							mips.reg.pc -= 4;
+							mips.reg.pc += (immed << 2);
+						}
+					} else if (rt == 0) {
+						cmd = "BLTZ $"+rs+", "+immed;
+						if(mips.reg.get(rs) < 0) {
+							mips.reg.pc -= 4;
+							mips.reg.pc += (immed << 2);
+						}
+					}
+					break;
 				case 2: //jump
 					cmd = "J "+immed;
 					mips.reg.pc = (mips.reg.pc & 0xF0000000) | (immed << 2);
@@ -136,23 +152,40 @@ public class TextSegment extends Memory {
 					mips.reg.pc = (mips.reg.pc & 0xF0000000) | (immed << 2);
 					break;
 				case 4:
-					cmd = "BEQ";
+					cmd = "BEQ $"+rs+", $"+rt+", "+immed;
+					if(mips.reg.get(rs) == mips.reg.get(rt)) {
+						mips.reg.pc -= 4;
+						mips.reg.pc += (immed << 2);
+					}
 					break;
 				case 5:
-					cmd = "BNE";
+					cmd = "BNE $"+rs+", $"+rt+", "+immed;
+					if(mips.reg.get(rs) != mips.reg.get(rt)) {
+						mips.reg.pc -= 4;
+						mips.reg.pc += (immed << 2);
+					}
 					break;
 				case 6:
-					cmd = "BLEZ";
+					cmd = "BLEZ $"+rs+", "+immed;
+					if(mips.reg.get(rs) <= 0) {
+						mips.reg.pc -= 4;
+						mips.reg.pc += (immed << 2);
+					}
 					break;
 				case 7:
-					cmd = "BGTZ";
+					cmd = "BGTZ $"+rs+", "+immed;
+					if(mips.reg.get(rs) > 0) {
+						mips.reg.pc -= 4;
+						mips.reg.pc += (immed << 2);
+					}
 					break;
 				case 8: //ADDI
 					cmd = "ADDI $"+rt+"=$"+rs+" + "+immed;
 					mips.reg.set(rt, mips.reg.get(rs) + immed); //make sure sign extended!
 					break;
-				case 9:
-					cmd = "ADDIU";
+				case 9:;
+					cmd = "ADDIU $"+rt+"=$"+rs+" + "+immed;
+					mips.reg.set(rt, mips.reg.get(rs) + immed); //make sure sign extended!
 					break;
 				case 10:
 					cmd = "SLTI";
@@ -168,9 +201,10 @@ public class TextSegment extends Memory {
 					mips.reg.set(rt, mips.reg.get(rs) | immedU);
 					break;
 				case 0x0F: //LUI
-					cmd = "LUI";
-					mips.reg.set(rt, immed << 16);
+					cmd = "LUI $" + rt + ", " + immedU;
+					mips.reg.set(rt, immedU << 16);
 					break;
+				/*
 				case 0x14:
 					cmd = "BEQL";
 					break;
@@ -183,6 +217,7 @@ public class TextSegment extends Memory {
 				case 0x17:
 					cmd = "BGTZL";
 					break;
+				*/
 				case 0x20: //LB
 					cmd = "LB $"+rt+" = MEM[$"+rs+" + "+immed+"]";
 					mips.reg.set(rt, mips.getFromMemory(mips.reg.get(rs), immed));
@@ -202,12 +237,9 @@ public class TextSegment extends Memory {
 				default:
 					cmd = "OTHER I OR J: " + opcode + " -- " + Integer.toBinaryString(opcode) + " -- " + Integer.toHexString(opcode);
 					break;
-			}
-			
-			//COMMANDS!
-			
+			}			
 		}
-		cmd += " -- 0x" + Integer.toHexString(this.get(loc));
+		cmd += " -- 0x" + Integer.toHexString(this.get(loc)); //for debugging
 		if(!cmd.equals("") && printCmd) System.out.println(cmd);
 		return 0;
 	}

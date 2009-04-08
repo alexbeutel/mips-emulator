@@ -5,12 +5,12 @@ LW load word
 SB store byte											
 SW store word											
 LUI load upper immediate								DONE
-BEQ branch on equal										
-BGEZ branch on greater than equal zero					
-BGTZ branch on greater than zero						
-BLEZ branch on less than equal zero						
-BLTZ branch on less than zero							
-BNE branch on not equal									
+BEQ branch on equal										DONE
+BGEZ branch on greater than equal zero					DONE
+BGTZ branch on greater than zero						DONE
+BLEZ branch on less than equal zero						DONE
+BLTZ branch on less than zero							DONE
+BNE branch on not equal									DONE
 J jump													DONE
 JAL jump and link										DONE
 JR jump register										DONE
@@ -19,8 +19,8 @@ SYSCALL (implement syscall code 1,4,5,8,10)				Started, did for 16 (syscall exit
 Nikhil:
 ADD add													DONE
 ADDI add immediate										DONE
-ADDU add without overflow								
-ADDIU add immediate without overflow					
+ADDU add without overflow								DONE
+ADDIU add immediate without overflow					DONE
 AND and													DONE
 MULT multiply											
 MULTU unsigned multiply									
