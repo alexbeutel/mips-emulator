@@ -21,7 +21,10 @@ public class MIPSEmulator {
 			out("failed loading file");
 			return;
 		}
+		
+		//Initialize register values
 		reg.pc = instr.getStart();
+		
 		
 		String opt = getUserInput("Single step (s) or run to complete (c): ");
 		if(opt.toLowerCase().charAt(0) == 's') {
@@ -143,14 +146,45 @@ public class MIPSEmulator {
 	
 	private boolean dInstruction(String instruction) {
 		if(instruction.length() <= 2) return false;
-		String address = instruction.substring(2);
+		String[] parts = instruction.split("\\s+");
+		if(parts.length < 2) return false;
 		int location = 0;
-		try{
-			location = loadHex(address);
-		} catch (NumberFormatException e) {
-			return false;
+		String address = parts[parts.length-1];
+		boolean inputHex = false;
+		int output = 0; //0 is decimal, 1 is binary, 2 is hex;
+		for(int i = 1; i < parts.length-1; i++) {
+			if(parts[i].equals("-h"))
+				inputHex = true;
+			if(parts[i].equals("-oh"))
+				output = 2;
+			if(parts[i].equals("-ob"))
+				output = 1;
 		}
-		System.out.println("MEM[ " + location + " ] = " + getFromMemory(location, 0));
+		
+		if(inputHex) {
+			try {
+				if(address.startsWith("0x"))
+					address = address.substring(2);
+				location = loadHex(address);
+				address = "0x"+address;
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		} else {
+			try{
+				location = Integer.parseInt(address);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		String out = "";
+		if(output == 0)
+			out = getFromMemory(location, 0) + "";
+		else if (output == 1)
+			out = Integer.toBinaryString(getFromMemory(location, 0));
+		else if (output == 2)
+			out = "0x"+Integer.toHexString(getFromMemory(location, 0));
+		System.out.println("MEM[ " + address + " ] = " + out);
 		return true;
 	}
 	
@@ -175,8 +209,8 @@ public class MIPSEmulator {
 	}
 	private void outputHelp() {
 		out("p [#/HI/LO/PC/all] - print registers either specific #, hi, lo, pc, or all registers");
-		out("d # - print memory at specific location");
-		out("s # - execute next # instructions");
+		out("d # - print memory at specific location, default takes a decimal int\n\t-h : take in hex\n\t-oh : output hex\n\t-ob : output binary");
+		out("s # - execute next # instructions (# is decimal)");
 		out("q - quit");
 	}
 	private void invalidCommand() {
@@ -212,7 +246,13 @@ public class MIPSEmulator {
 		in.close();
 	}
 	public int getFromMemory(int start, int offset) {
-		// Fill in, must get from either Data or Stack appropriately
+		int loc = start + offset;
+		if(loc >= 0x10010000 && loc <= 0x10010000 + 4*1024)
+			return data.get(loc);
+		if(loc <= 0x7FFFEFFF && loc >= 0x7FFFEFFF-2*1024)
+			return stack.get(loc);
+		if(loc >= 0x00400000 && loc <= 0x00400000 + 2*1024)
+			return instr.get(loc);
 		return 0;
 	}
 	public static int loadHex(String s) throws NumberFormatException {
