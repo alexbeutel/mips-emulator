@@ -11,9 +11,9 @@ BGTZ branch on greater than zero
 BLEZ branch on less than equal zero						
 BLTZ branch on less than zero							
 BNE branch on not equal									
-J jump													
-JAL jump and link										
-JR jump register										
+J jump													DONE
+JAL jump and link										DONE
+JR jump register										DONE
 SYSCALL (implement syscall code 1,4,5,8,10)				Started, did for 16 (syscall exit)
 
 Nikhil:

@@ -58,6 +58,9 @@ public class TextSegment extends Memory {
 				case 0x25:
 					cmd="OR $"+rd+"=$"+rs+" | $"+rt;
 					mips.reg.set(rd, mips.reg.get(rs) | mips.reg.get(rt));
+				case 8: //JR
+					cmd = "JR $"+ rs;
+					mips.reg.pc = mips.reg.get(rs);
 			}
 			
 			//COMMANDS!
@@ -81,6 +84,14 @@ public class TextSegment extends Memory {
 				case 0x20: //LB
 					cmd = "LB $"+rt+" = MEM[$"+rs+" + "+immed+"]";
 					mips.reg.set(rt, mips.getFromMemory(mips.reg.get(rs), immed));
+				case 2: //jump
+					cmd = "J "+immed;
+					mips.reg.pc = (mips.reg.pc & 0xF0000000) | (immed << 2);
+				case 3: //JAL
+					cmd = "JAL " + immed;
+					// $31 = PC + 8 (or nPC + 4); PC = nPC; nPC = (PC &  0xf0000000) | (target << 2);
+					mips.reg.set(31, mips.reg.pc + 4);
+					mips.reg.pc = (mips.reg.pc & 0xF0000000) | (immed << 2);
 			}
 			
 			//COMMANDS!
