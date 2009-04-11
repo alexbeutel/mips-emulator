@@ -52,8 +52,14 @@ public class Memory {
 			end = start;
 			start = temp;
 		}
-		int max = 0xFFFFFFFF;
 		int val = mem[getRealLoc(loc)];
+		return getBitsFromVal(val, start, end, signed);
+	}
+	public int getBits(int loc, int start, int end) {
+		return getBits(loc, start, end, true);
+	}
+	public int getBitsFromVal(int val, int start, int end,  boolean signed) {
+		int max = 0xFFFFFFFF;
 		int mask = (max >>> (31-end)) & (max << start);
 		val = val & mask;
 		if(signed) {
@@ -61,9 +67,6 @@ public class Memory {
 			return val >> (start + (31-end));
 		}
 		return val >>> start;
-	}
-	public int getBits(int loc, int start, int end) {
-		return getBits(loc, start, end, true);
 	}
 	/*
 	private boolean checkLength() {
