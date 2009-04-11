@@ -68,6 +68,14 @@ public class Memory {
 		}
 		return val >>> start;
 	}
+	public void printAll() {
+		for(int i = 0; i < mem.length; i++) {
+			if(mem[i] != null && mem[i] != 0) {
+				int loc = i*4 + start;
+				System.out.println("0x"+Integer.toHexString(loc).toUpperCase()+": 0x"+Integer.toHexString(mem[i]).toUpperCase());
+			}
+		}
+	}
 	/*
 	private boolean checkLength() {
 		int s = 0;
