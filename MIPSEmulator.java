@@ -24,7 +24,7 @@ public class MIPSEmulator {
 		
 		//Initialize register values
 		reg.pc = instr.getStart();
-		
+		reg.set(29, 0x7FFFEFFC);
 		
 		String opt = getUserInput("Single step (s) or run to complete (c): ");
 		if(opt.toLowerCase().charAt(0) == 's') {
@@ -254,6 +254,14 @@ public class MIPSEmulator {
 		if(loc >= 0x00400000 && loc <= 0x00400000 + 2*1024)
 			return instr.get(loc);
 		return 0;
+	}
+	public void setMemory(int tloc, int rt) {
+		if(tloc >= 0x10010000 && tloc <= 0x10010000 + 4*1024)
+			this.data.set(tloc, rt);
+		if(tloc <= 0x7FFFEFFF && tloc >= 0x7FFFEFFF-2*1024)
+			this.stack.set(tloc, rt);
+		if(tloc >= 0x00400000 && tloc <= 0x00400000 + 2*1024)
+			this.instr.set(tloc, rt);
 	}
 	public static int loadHex(String s) throws NumberFormatException {
 		int full = 0;
