@@ -61,8 +61,34 @@ public class TextSegment extends Memory {
 					mips.reg.pc = mips.reg.get(rs);
 					break;
 				case 12:
-					cmd="syscall";
-					if((Integer)mips.reg.get(2) == 16) {
+					cmd="syscall "+mips.reg.get(2);
+					if(mips.reg.get(2) == 1) {
+						System.out.print(mips.reg.get(4)); //get corrector register
+					} else if(mips.reg.get(2) == 4) { //print string
+						// NEEDS TESTING - amb
+						boolean stringIncomplete = true;
+						int l = mips.reg.get(4);
+						while(stringIncomplete) {
+							int x = mips.getFromMemory(l, 0);
+							//System.out.println("mem loc: 0x"+Integer.toHexString(x) + " based on 0x" + Integer.toHexString(l));
+							for(int i = 0; i < 4; i++) {
+								int val = getBitsFromVal(x,24-8*i,31-8*i, false);
+								//System.out.println("val: "+Integer.toHexString(val)+", "+(char)val);
+								if(val == 0) {
+									stringIncomplete=false;
+									break;
+								}
+								System.out.print((char)(val));
+							}
+							l += 4;
+						}
+						//System.out.print("\n");
+						//print string
+					} else if(mips.reg.get(2) == 5) {
+						mips.reg.set(2, mips.getFromMemory(mips.reg.get(4),0));
+					} else if(mips.reg.get(2) == 8) {
+						
+					} else if(mips.reg.get(2) == 10) {
 						return -1;
 					}
 					break;
@@ -80,11 +106,11 @@ public class TextSegment extends Memory {
 					break;
 				case 32: //add with overflow
 					cmd="ADD $"+rd+"=$"+rs+" + $"+rt;
-					mips.reg.set(rd, mips.reg.get(rs) + mips.reg.get(rd));
+					mips.reg.set(rd, mips.reg.get(rs) + mips.reg.get(rt));
 					break;
 				case 33:
 					cmd="ADDU $"+rd+"=$"+rs+" + $"+rt;
-					mips.reg.set(rd, mips.reg.get(rs) + mips.reg.get(rd));
+					mips.reg.set(rd, mips.reg.get(rs) + mips.reg.get(rt));
 					break;
 				case 34:
 					cmd = "SUB";
@@ -223,7 +249,8 @@ public class TextSegment extends Memory {
 					mips.reg.set(rt, mips.getFromMemory(mips.reg.get(rs), immed));
 					break;
 				case 0x23:
-					cmd = "LW";
+					cmd = "LW $"+ rt+"= MEM[$"+rs+" + "+immed+"]";
+					mips.reg.set(rt, mips.getFromMemory(mips.reg.get(rs), immed));
 					break;
 				case 0x24:
 					cmd = "LBU";
@@ -232,7 +259,9 @@ public class TextSegment extends Memory {
 					cmd = "SB";
 					break;
 				case 0x2B:
-					cmd = "SW";
+					cmd = "SW MEM[ $" +rs+" + "+immed+"] = $"+rt;
+					int tloc = mips.reg.get(rs) + immed;
+					mips.setMemory(tloc, rt);
 					break;
 				default:
 					cmd = "OTHER I OR J: " + opcode + " -- " + Integer.toBinaryString(opcode) + " -- " + Integer.toHexString(opcode);

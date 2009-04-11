@@ -1,9 +1,9 @@
 Alex:
 LB load byte											Started but needs work
 LBU load byte unsigned									
-LW load word											
+LW load word											DONE
 SB store byte											
-SW store word											
+SW store word											DONE
 LUI load upper immediate								DONE
 BEQ branch on equal										DONE
 BGEZ branch on greater than equal zero					DONE
