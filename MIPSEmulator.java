@@ -160,8 +160,13 @@ public class MIPSEmulator {
 			if(parts[i].equals("-ob"))
 				output = 1;
 		}
-		
-		if(inputHex) {
+		if(address.equals("stack")) {
+			this.stack.printAll();
+			return true;
+		}else if (address.equals("data")) {
+			this.stack.printAll();
+			return true;
+		} else if(inputHex) {
 			try {
 				if(address.startsWith("0x"))
 					address = address.substring(2);
@@ -209,7 +214,7 @@ public class MIPSEmulator {
 	}
 	private void outputHelp() {
 		out("p [#/HI/LO/PC/all] - print registers either specific #, hi, lo, pc, or all registers");
-		out("d # - print memory at specific location, default takes a decimal int\n\t-h : take in hex\n\t-oh : output hex\n\t-ob : output binary");
+		out("d [#/data/stack] - print memory at specific location, default takes a decimal int\n\t-h : take in hex\n\t-oh : output hex\n\t-ob : output binary");
 		out("s # - execute next # instructions (# is decimal)");
 		out("q - quit");
 	}
@@ -255,13 +260,13 @@ public class MIPSEmulator {
 			return instr.get(loc);
 		return 0;
 	}
-	public void setMemory(int tloc, int rt) {
-		if(tloc >= 0x10010000 && tloc <= 0x10010000 + 4*1024)
-			this.data.set(tloc, rt);
-		if(tloc <= 0x7FFFEFFF && tloc >= 0x7FFFEFFF-2*1024)
-			this.stack.set(tloc, rt);
-		if(tloc >= 0x00400000 && tloc <= 0x00400000 + 2*1024)
-			this.instr.set(tloc, rt);
+	public void setMemory(int start,int offset, int rt) {
+		if(start >= 0x10010000 && start <= 0x10010000 + 4*1024)
+			this.data.set(start+offset, rt);
+		if(start <= 0x7FFFEFFF && start >= 0x7FFFEFFF-2*1024)
+			this.stack.set(start-offset, rt);
+		if(start >= 0x00400000 && start <= 0x00400000 + 2*1024)
+			this.instr.set(start+offset, rt);
 	}
 	public static int loadHex(String s) throws NumberFormatException {
 		int full = 0;

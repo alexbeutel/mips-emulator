@@ -58,6 +58,9 @@ public class TextSegment extends Memory {
 					break;
 				case 8: //JR
 					cmd = "JR $"+ rs;
+					if(mips.reg.get(rs) == -1){
+						return -1;
+					}
 					mips.reg.pc = mips.reg.get(rs);
 					break;
 				case 12:
@@ -261,7 +264,7 @@ public class TextSegment extends Memory {
 				case 0x2B:
 					cmd = "SW MEM[ $" +rs+" + "+immed+"] = $"+rt;
 					int tloc = mips.reg.get(rs) + immed;
-					mips.setMemory(tloc, rt);
+					mips.setMemory(mips.reg.get(rs), immed, mips.reg.get(rt));
 					break;
 				default:
 					cmd = "OTHER I OR J: " + opcode + " -- " + Integer.toBinaryString(opcode) + " -- " + Integer.toHexString(opcode);
