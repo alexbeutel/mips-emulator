@@ -6,7 +6,7 @@ public class Register {
 		r = new int[32];
 		for(int i = 0; i < r.length; i++)
 			r[i] = 0;
-		r[2] = 16;
+		r[2] = 10;
 		HI = 0;
 		LO = 0;
 		pc = 0;
