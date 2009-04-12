@@ -72,7 +72,7 @@ public class Memory {
 		for(int i = 0; i < mem.length; i++) {
 			if(mem[i] != null && mem[i] != 0) {
 				int loc = i*4 + start;
-				System.out.println("0x"+Integer.toHexString(loc).toUpperCase()+": 0x"+Integer.toHexString(mem[i]).toUpperCase());
+				System.out.println("0x"+MIPSEmulator.formatHex(loc).toUpperCase()+": 0x"+MIPSEmulator.formatHex(mem[i]).toUpperCase());
 			}
 		}
 	}

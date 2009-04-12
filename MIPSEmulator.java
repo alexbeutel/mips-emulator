@@ -188,7 +188,7 @@ public class MIPSEmulator {
 		else if (output == 1)
 			out = Integer.toBinaryString(getFromMemory(location, 0));
 		else if (output == 2)
-			out = "0x"+Integer.toHexString(getFromMemory(location, 0));
+			out = "0x"+MIPSEmulator.formatHex(getFromMemory(location, 0));
 		System.out.println("MEM[ " + address + " ] = " + out);
 		return true;
 	}
@@ -276,6 +276,14 @@ public class MIPSEmulator {
 			full = full | t;
 		}
 		return full;
+	}
+	public static String formatHex(int n) {
+		String s = Integer.toHexString(n).toUpperCase();
+		while(s.length() < 8) {
+			s = "0"+s;
+		}
+		return s;
+			
 	}
 	public static void main(String[] args) {
 		// If running from command prompt, can run by: 

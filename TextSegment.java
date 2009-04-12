@@ -27,7 +27,7 @@ public class TextSegment extends Memory {
 		// Increment PC + 4
 		mips.reg.pc += 4;
 		//System.out.println(loc);
-		//System.out.println("0x" + Integer.toHexString(this.get(loc)));
+		//System.out.println("0x" + MIPSEmulator.formatHex(this.get(loc)));
 		//System.out.println(Integer.toBinaryString(this.get(loc)));
 		String cmd = "";
 		//not as clear division of I and J as expected, may need to combine
@@ -73,10 +73,10 @@ public class TextSegment extends Memory {
 						int l = mips.reg.get(4);
 						while(stringIncomplete) {
 							int x = mips.getFromMemory(l, 0);
-							//System.out.println("mem loc: 0x"+Integer.toHexString(x) + " based on 0x" + Integer.toHexString(l));
+							//System.out.println("mem loc: 0x"+MIPSEmulator.formatHex(x) + " based on 0x" + MIPSEmulator.formatHex(l));
 							for(int i = 0; i < 4; i++) {
 								int val = getBitsFromVal(x,24-8*i,31-8*i, false);
-								//System.out.println("val: "+Integer.toHexString(val)+", "+(char)val);
+								//System.out.println("val: "+MIPSEmulator.formatHex(val)+", "+(char)val);
 								if(val == 0) {
 									stringIncomplete=false;
 									break;
@@ -267,11 +267,11 @@ public class TextSegment extends Memory {
 					mips.setMemory(mips.reg.get(rs), immed, mips.reg.get(rt));
 					break;
 				default:
-					cmd = "OTHER I OR J: " + opcode + " -- " + Integer.toBinaryString(opcode) + " -- " + Integer.toHexString(opcode);
+					cmd = "OTHER I OR J: " + opcode + " -- " + Integer.toBinaryString(opcode) + " -- " + MIPSEmulator.formatHex(opcode);
 					break;
 			}			
 		}
-		cmd += " -- 0x" + Integer.toHexString(this.get(loc)); //for debugging
+		cmd += " -- 0x" + MIPSEmulator.formatHex(this.get(loc)); //for debugging
 		if(!cmd.equals("") && printCmd) System.out.println(cmd);
 		return 0;
 	}
