@@ -251,13 +251,13 @@ public class MIPSEmulator {
 		in.close();
 	}
 	public int getFromMemory(int start, int offset) {
-		int loc = start + offset;
-		if(loc >= 0x10010000 && loc <= 0x10010000 + 4*1024)
-			return data.get(loc);
-		if(loc <= 0x7FFFEFFF && loc >= 0x7FFFEFFF-2*1024)
-			return stack.get(loc);
-		if(loc >= 0x00400000 && loc <= 0x00400000 + 2*1024)
-			return instr.get(loc);
+		//int loc = start + offset;
+		if(start >= 0x10010000 && start <= 0x10010000 + 4*1024)
+			return data.get(start+offset);
+		if(start <= 0x7FFFEFFF && start >= 0x7FFFEFFF-2*1024)
+			return stack.get(start-offset);
+		if(start >= 0x00400000 && start <= 0x00400000 + 2*1024)
+			return instr.get(start+offset);
 		return 0;
 	}
 	public void setMemory(int start,int offset, int rt) {
@@ -267,6 +267,15 @@ public class MIPSEmulator {
 			this.stack.set(start-offset, rt);
 		if(start >= 0x00400000 && start <= 0x00400000 + 2*1024)
 			this.instr.set(start+offset, rt);
+	}
+	public void setMemoryByte(int start, int offset, int val) {
+		val = Memory.getBitsFromVal(val, 0, 7, false);
+		int word = getFromMemory(start, offset);
+		int byteOffset= (start+offset) % 4;
+		word = (Memory.getBitsFromVal(word, 31-8*byteOffset, 31, false) << (31-8*byteOffset)) | (Memory.getBitsFromVal(word, 0, 8*(4-byteOffset), false));
+		//word = Memory.getBitsFromVal(word, 8, 31, false) << 8;
+		int newVal = word | val;
+		this.setMemory(start, offset, newVal);
 	}
 	public static int loadHex(String s) throws NumberFormatException {
 		int full = 0;
@@ -285,6 +294,17 @@ public class MIPSEmulator {
 		return s;
 			
 	}
+	/*
+	public static int loadByte(int val, int start, int offset) {
+		int loc = 0;
+		if(start >= 0x10010000 && start <= 0x10010000 + 4*1024)
+			loc = start+offset;
+		if(start <= 0x7FFFEFFF && start >= 0x7FFFEFFF-2*1024)
+			loc = start - offset;
+		if(start >= 0x00400000 && start <= 0x00400000 + 2*1024)
+			l
+		return 0;
+	} */ 
 	public static void main(String[] args) {
 		// If running from command prompt, can run by: 
 		// java MIPSEmulator a.in
