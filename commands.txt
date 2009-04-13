@@ -14,7 +14,7 @@ BNE branch on not equal									DONE
 J jump													DONE
 JAL jump and link										DONE
 JR jump register										DONE
-SYSCALL (implement syscall code 1,4,5,8,10)				Almost done, just need to do 8
+SYSCALL (implement syscall code 1,4,5,8,10)				DONE but needs testing
 
 Nikhil:
 ADD add													DONE

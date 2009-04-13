@@ -92,7 +92,23 @@ public class TextSegment extends Memory {
 							System.out.println("Invalid input");
 						}
 					} else if(mips.reg.get(2) == 8) {
-						
+						String temp = MIPSEmulator.getUserInput("");
+						int i = 0;
+						while(i < temp.length() && i < mips.reg.get(3)) {
+							int val = 0;
+							String temp2 = temp;
+							if(temp.length() > 4)
+								temp2 = temp.substring(0, 4);
+							//FIX THIS
+							for(int j = 0; j < temp2.length(); j++) {
+								val = (int)temp2.charAt(j)<<(24-8*j) | val;
+							}
+							//val = (int)temp2.charAt(0)<<24 | (int)temp2.charAt(1)<<16 | (int)temp2.charAt(2)<<8  | (int)temp2.charAt(3);
+							mips.setMemory(mips.reg.get(2), i, val);
+							if(temp.length() > 4)
+								temp = temp.substring(4);
+							i += 4;
+						}
 					} else if(mips.reg.get(2) == 10) {
 						return -1;
 					}
