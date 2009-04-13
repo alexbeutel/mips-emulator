@@ -1,8 +1,8 @@
 Alex:
-LB load byte											Started but needs work
-LBU load byte unsigned									
+LB load byte											DONE but needs testing
+LBU load byte unsigned									DONE but needs testing
 LW load word											DONE
-SB store byte											
+SB store byte											DONE but needs testing
 SW store word											DONE
 LUI load upper immediate								DONE
 BEQ branch on equal										DONE
@@ -14,7 +14,7 @@ BNE branch on not equal									DONE
 J jump													DONE
 JAL jump and link										DONE
 JR jump register										DONE
-SYSCALL (implement syscall code 1,4,5,8,10)				Started, did for 16 (syscall exit)
+SYSCALL (implement syscall code 1,4,5,8,10)				Almost done, just need to do 8
 
 Nikhil:
 ADD add													DONE

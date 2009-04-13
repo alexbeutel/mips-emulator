@@ -68,15 +68,12 @@ public class TextSegment extends Memory {
 					if(mips.reg.get(2) == 1) {
 						System.out.print(mips.reg.get(4)); //get corrector register
 					} else if(mips.reg.get(2) == 4) { //print string
-						// NEEDS TESTING - amb
 						boolean stringIncomplete = true;
 						int l = mips.reg.get(4);
 						while(stringIncomplete) {
 							int x = mips.getFromMemory(l, 0);
-							//System.out.println("mem loc: 0x"+MIPSEmulator.formatHex(x) + " based on 0x" + MIPSEmulator.formatHex(l));
 							for(int i = 0; i < 4; i++) {
 								int val = getBitsFromVal(x,24-8*i,31-8*i, false);
-								//System.out.println("val: "+MIPSEmulator.formatHex(val)+", "+(char)val);
 								if(val == 0) {
 									stringIncomplete=false;
 									break;
@@ -85,10 +82,15 @@ public class TextSegment extends Memory {
 							}
 							l += 4;
 						}
-						//System.out.print("\n");
-						//print string
 					} else if(mips.reg.get(2) == 5) {
-						mips.reg.set(2, mips.getFromMemory(mips.reg.get(4),0));
+						String temp = MIPSEmulator.getUserInput("");
+						int t = 0;
+						try {
+							t =Integer.parseInt(temp);
+							mips.reg.set(2, t); //mips.getFromMemory(mips.reg.get(4),0));
+						} catch (NumberFormatException e) {
+							System.out.println("Invalid input");
+						}
 					} else if(mips.reg.get(2) == 8) {
 						
 					} else if(mips.reg.get(2) == 10) {
@@ -153,7 +155,7 @@ public class TextSegment extends Memory {
 			immedU = getBits(loc, 0, 15, false);
 			addr = getBits(loc, 0, 25);		// J-Type
 			addrU = getBits(loc, 0, 25, false);
-			
+			int word, byteOffset, val;
 			switch(opcode) {
 				case 1:
 					if(rt == 1) {
@@ -249,7 +251,10 @@ public class TextSegment extends Memory {
 				*/
 				case 0x20: //LB
 					cmd = "LB $"+rt+" = MEM[$"+rs+" + "+immed+"]";
-					mips.reg.set(rt, mips.getFromMemory(mips.reg.get(rs), immed));
+					word = mips.getFromMemory(mips.reg.get(rs), immed);
+					byteOffset = (mips.reg.get(rs) + immed) % 8;
+					val = getBitsFromVal(word,24-8*byteOffset,31-8*byteOffset, true);
+					mips.reg.set(rt, val);
 					break;
 				case 0x23:
 					cmd = "LW $"+ rt+"= MEM[$"+rs+" + "+immed+"]";
@@ -257,13 +262,17 @@ public class TextSegment extends Memory {
 					break;
 				case 0x24:
 					cmd = "LBU";
+					word = mips.getFromMemory(mips.reg.get(rs), immed);
+					byteOffset = (mips.reg.get(rs) + immed) % 8;
+					val = getBitsFromVal(word,24-8*byteOffset,31-8*byteOffset, false);
 					break;
 				case 0x28:
-					cmd = "SB";
+					cmd = "SB MEM[ $" +rs+" + "+immed+"] = $"+rt;
+					mips.setMemoryByte(mips.reg.get(rs), immed, mips.reg.get(rt));
 					break;
 				case 0x2B:
 					cmd = "SW MEM[ $" +rs+" + "+immed+"] = $"+rt;
-					int tloc = mips.reg.get(rs) + immed;
+					//int tloc = mips.reg.get(rs) + immed;
 					mips.setMemory(mips.reg.get(rs), immed, mips.reg.get(rt));
 					break;
 				default:
