@@ -6,7 +6,7 @@ public class Register {
 		r = new int[32];
 		for(int i = 0; i < r.length; i++)
 			r[i] = 0;
-		r[2] = 10;
+		//r[2] = 10;
 		r[31] = -1;
 		HI = 0;
 		LO = 0;
@@ -27,14 +27,14 @@ public class Register {
 		printReg("pc");
 	}
 	public void printReg(int i) {
-		System.out.println("$"+i+" = 0x" + Integer.toHexString(r[i]));
+		System.out.println("$"+i+" = 0x" + MIPSEmulator.formatHex(r[i]));
 	}
 	public void printReg(String s) {
 		if(s.equals("lo"))
-			System.out.println("$LO=0x" + Integer.toHexString(this.LO));
+			System.out.println("$LO=0x" + MIPSEmulator.formatHex(this.LO));
 		else if(s.equals("hi"))
-			System.out.println("$HI=0x" + Integer.toHexString(this.HI));
+			System.out.println("$HI=0x" + MIPSEmulator.formatHex(this.HI));
 		else if(s.equals("pc"))
-			System.out.println("$PC=0x" + Integer.toHexString(this.pc));
+			System.out.println("$PC=0x" + MIPSEmulator.formatHex(this.pc));
 	}
 }
