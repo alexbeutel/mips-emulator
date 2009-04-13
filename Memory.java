@@ -58,7 +58,7 @@ public class Memory {
 	public int getBits(int loc, int start, int end) {
 		return getBits(loc, start, end, true);
 	}
-	public int getBitsFromVal(int val, int start, int end,  boolean signed) {
+	public static int getBitsFromVal(int val, int start, int end,  boolean signed) {
 		int max = 0xFFFFFFFF;
 		int mask = (max >>> (31-end)) & (max << start);
 		val = val & mask;
