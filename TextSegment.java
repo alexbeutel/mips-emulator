@@ -5,6 +5,7 @@
  */
 
 import java.util.*;
+import java.math.*;
 public class TextSegment extends Memory {
 	public TextSegment() {
 		// CHECK SIZE & START
@@ -45,15 +46,18 @@ public class TextSegment extends Memory {
 			
 			switch(func) {
 				case 0: //SLL
-					cmd = "SLL $"+rd+" = $"+rt+"<< shamt";
-					mips.reg.set(rd, (int)(mips.reg.get(rt) * Math.pow(10, shamt)));
+					cmd = "SLL $"+rd+" = $"+rt+" << " + shamt;
+					//mips.reg.set(rd, (int)(mips.reg.get(rt) * Math.pow(10, shamt)));
+					mips.reg.set(rd, mips.reg.get(rt) << shamt);
 					break;
 				case 2: //SRL
-					cmd = "SRL $"+rd+" = $"+rt+">> shamt";
-					mips.reg.set(rd, (int)(mips.reg.get(rt) * Math.pow(.1, shamt)));
+					cmd = "SRL $"+rd+" = $"+rt+" >>> " + shamt;
+					//mips.reg.set(rd, (int)(mips.reg.get(rt) * Math.pow(.1, shamt)));
+					mips.reg.set(rd, mips.reg.get(rt) >>> shamt);
 					break;
 				case 3:
-					cmd = "SRA";
+					cmd = "SRA $"+rd+" = $"+rt+" >> "+shamt;
+					mips.reg.set(rd, mips.reg.get(rt) >> shamt);
 					break;
 				case 8: //JR
 					cmd = "JR $"+ rs;
@@ -122,7 +126,16 @@ public class TextSegment extends Memory {
 					break;
 				case 24:
 					cmd = "MULT $LO =$"+rs+" x $"+rt;
-					mips.reg.set("LO", mips.reg.get(rs) * mips.reg.get(rt));
+					long l1 = mips.reg.get(rs);
+					long l2 = mips.reg.get(rt);
+					long m = l1 * l2;
+					int lo = (int)((m << 32) >>> 32);
+					int hi = (int)(m >>> 32);
+					//BigInteger b1 = new BigInteger(mips.reg.get(rs) + "");
+					//BigInteger b2 = new BigInteger(mips.reg.get(rt) + "");
+					//b1.multiply(b2);
+					mips.reg.set("LO", lo);
+					mips.reg.set("HI", hi);
 					break;
 				case 25:
 					cmd = "MULTU $LO =$"+rs+" x $"+rt;
@@ -204,14 +217,15 @@ public class TextSegment extends Memory {
 					}
 					break;
 				case 2: //jump
-					cmd = "J "+immed;
-					mips.reg.pc = (mips.reg.pc & 0xF0000000) | (immed << 2);
+					cmd = "J "+addrU;
+					mips.reg.pc -= 4;
+					mips.reg.pc = (mips.reg.pc & 0xF0000000) | (addrU << 2);
 					break;
 				case 3: //JAL
-					cmd = "JAL " + immed;
+					cmd = "JAL " + addrU;
 					// $31 = PC + 8 (or nPC + 4); PC = nPC; nPC = (PC &  0xf0000000) | (target << 2);
-					mips.reg.set(31, mips.reg.pc + 4);
-					mips.reg.pc = (mips.reg.pc & 0xF0000000) | (immed << 2);
+					mips.reg.set(31, mips.reg.pc);
+					mips.reg.pc = (mips.reg.pc & 0xF0000000) | (addrU << 2);
 					break;
 				case 4:
 					cmd = "BEQ $"+rs+", $"+rt+", "+immed;
