@@ -174,15 +174,17 @@ public class TextSegment extends Memory {
 					break;
 				case 42:
 					//if $s < $t $d = 1; advance_pc (4); else $d = 0;
-					cmd = "SLT if $"+rs+"<"+rt+" then $"+rd+" = 1. Otherwise $"+rd+" = 0.";
+					cmd = "SLT if $"+rs+"<"+rt+" ? $"+rd+" = 1 : $"+rd+" = 0";
 					if (mips.reg.get(rs) < mips.reg.get(rt))
 						mips.reg.set(rd, 1);
 					else
 						mips.reg.set(rd, 0);
 					break;
 				case 43:
-					cmd = "SLTU if $"+rs+"<"+rt+" then $"+rd+" = 1. Otherwise $"+rd+" = 0.";
-					if (mips.reg.get(rs) < mips.reg.get(rt))
+					cmd = "SLTU if $"+rs+"<"+rt+" ? $"+rd+" = 1 : $"+rd+" = 0";
+					long val1 = ((long)(mips.reg.get(rs)) << 32) >>> 32;
+					long val2 = ((long)(mips.reg.get(rt)) << 32) >>> 32;
+					if (val1 < val2)
 						mips.reg.set(rd, 1);
 					else
 						mips.reg.set(rd, 0);
@@ -273,7 +275,9 @@ public class TextSegment extends Memory {
 					break;
 				case 11:
 					cmd = "SLTIU if $"+rs+"<"+immed+" then $"+rt+" = 1. Otherwise $"+rt+" = 0.";
-					if (mips.reg.get(rs) < immed)
+					long val1 = ((long)(mips.reg.get(rs)) << 32) >>> 32;
+					long val2 = ((long)(immed) << 32) >>> 32;
+					if (val1 < val2)
 						mips.reg.set(rt, 1);
 					else
 						mips.reg.set(rt, 0);
