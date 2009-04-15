@@ -48,10 +48,12 @@ public class TextSegment extends Memory {
 			
 			switch(func) {
 				case 0: //SLL
-					cmd = "SLL";
+					cmd = "SLL $"+rd+" = $"+rt+"<< shamt";
+					mips.reg.set(rd, (int)(mips.reg.get(rt) * Math.pow(10, shamt)));
 					break;
 				case 2: //SRL
-					cmd = "SRL";
+					cmd = "SRL $"+rd+" = $"+rt+">> shamt";
+					mips.reg.set(rd, (int)(mips.reg.get(rt) * Math.pow(.1, shamt)));
 					break;
 				case 3:
 					cmd = "SRA";
@@ -114,16 +116,20 @@ public class TextSegment extends Memory {
 					}
 					break;
 				case 16:
-					cmd = "MFHI";
+					cmd = "MFHI $"+rd+" = $HI";
+					mips.reg.set(rd, mips.reg.get("HI"));
 					break;
 				case 18:
-					cmd = "MFLO";
+					cmd = "MFLO $"+rd+" = $LO";
+					mips.reg.set(rd, mips.reg.get("LO"));
 					break;
 				case 24:
-					cmd = "MULT";
+					cmd = "MULT $LO =$"+rs+" x $"+rt;
+					mips.reg.set("LO", mips.reg.get(rs) * mips.reg.get(rt));
 					break;
 				case 25:
-					cmd = "MULTU";
+					cmd = "MULTU $LO =$"+rs+" x $"+rt;
+					mips.reg.set("LO", mips.reg.get(rs) * mips.reg.get(rt));
 					break;
 				case 32: //add with overflow
 					cmd="ADD $"+rd+"=$"+rs+" + $"+rt;
@@ -134,10 +140,12 @@ public class TextSegment extends Memory {
 					mips.reg.set(rd, mips.reg.get(rs) + mips.reg.get(rt));
 					break;
 				case 34:
-					cmd = "SUB";
+					cmd="SUB $"+rd+"=$"+rs+" - $"+rt;
+					mips.reg.set(rd, mips.reg.get(rs) - mips.reg.get(rt));
 					break;
 				case 35:
-					cmd = "SUBU";
+					cmd="SUBU $"+rd+"=$"+rs+" - $"+rt;
+					mips.reg.set(rd, mips.reg.get(rs) - mips.reg.get(rt));
 					break;
 				case 36:
 					cmd="AND $"+rd+"=$"+rs+" & $"+rt;
@@ -148,16 +156,34 @@ public class TextSegment extends Memory {
 					mips.reg.set(rd, mips.reg.get(rs) | mips.reg.get(rt));
 					break;
 				case 38:
-					cmd = "XOR";
+					cmd="XOR $"+rd+"=$"+rs+" ^ $"+rt;
+					mips.reg.set(rd, mips.reg.get(rs) ^ mips.reg.get(rt));
 					break;
 				case 39:
 					cmd = "NOR";
 					break;
 				case 42:
-					cmd = "SLT";
+					//if $s < $t $d = 1; advance_pc (4); else $d = 0;
+					cmd = "SLT if $"+rs+"<"+rt+" then $"+rd+" = 1. Otherwise $"+rd+" = 0.";
+					if (mips.reg.get(rs) < mips.reg.get(rt))
+					{
+						mips.reg.set(rd, 1);
+					}
+					else
+					{
+						mips.reg.set(rd, 0);
+					}
 					break;
 				case 43:
-					cmd = "SLTU";
+					cmd = "SLTU if $"+rs+"<"+rt+" then $"+rd+" = 1. Otherwise $"+rd+" = 0.";
+					if (mips.reg.get(rs) < mips.reg.get(rt))
+					{
+						mips.reg.set(rd, 1);
+					}
+					else
+					{
+						mips.reg.set(rd, 0);
+					}
 					break;
 				default:
 					cmd = "OTHER R INSTRUCTION -- " + opcode + " -- " + func;
@@ -235,10 +261,27 @@ public class TextSegment extends Memory {
 					mips.reg.set(rt, mips.reg.get(rs) + immed); //make sure sign extended!
 					break;
 				case 10:
-					cmd = "SLTI";
+					//If $s is less than immediate, $t is set to one. It gets zero otherwise.
+					cmd = "SLTI if $"+rs+"<"+immed+" then $"+rt+" = 1. Otherwise $"+rt+" = 0.";
+					if (mips.reg.get(rs) < immed)
+					{
+						mips.reg.set(rt, 1);
+					}
+					else
+					{
+						mips.reg.set(rt, 0);
+					}
 					break;
 				case 11:
-					cmd = "SLTIU";
+					cmd = "SLTIU if $"+rs+"<"+immed+" then $"+rt+" = 1. Otherwise $"+rt+" = 0.";
+					if (mips.reg.get(rs) < immed)
+					{
+						mips.reg.set(rt, 1);
+					}
+					else
+					{
+						mips.reg.set(rt, 0);
+					}
 					break;
 				case 12:
 					cmd = "ANDI";

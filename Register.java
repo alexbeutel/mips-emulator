@@ -15,9 +15,24 @@ public class Register {
 	public int get(int index) {
 		return r[index];
 	}
+	public int get(String type){
+		if (type.toLowerCase().equals("hi"))
+			return HI;
+		else if (type.toLowerCase().equals("lo"))
+			return LO;
+		else
+			return -1;
+	}
 	public void set(int index, int o) {
 		if(index == 0) return;
 		r[index] = o;
+	}
+	
+	public void set(String type, int value){
+		if (type.toLowerCase().equals("hi"))
+			HI = value;
+		else if (type.toLowerCase().equals("lo"))
+			LO = value;
 	}
 	public void printAll() {
 		for(int i = 0; i<r.length; i++)

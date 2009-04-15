@@ -17,24 +17,24 @@ JR jump register										DONE
 SYSCALL (implement syscall code 1,4,5,8,10)				DONE but needs testing
 
 Nikhil:
-ADD add													DONE
+ADD add (with overflow)									DONE
 ADDI add immediate										DONE
 ADDU add without overflow								DONE
 ADDIU add immediate without overflow					DONE
 AND and													DONE
-MULT multiply											
-MULTU unsigned multiply									
+MULT multiply											DONE
+MULTU unsigned multiply									DONE
 OR or													DONE
 ORI or immediate										DONE
-XOR xor													
-SLL shift left logical									
-SRA shift right arithmetic								
-SRL shift right logical									
-SUB subtract with overflow								
-SUBU subtract without overflow							
-SLT set less than										
-SLTI set less than immediate							
-SLTU set less than unsigned								
-SLTIU set less than immediate unsigned					
-MFHI move from HI register								
-MFLO move from LO register								
+XOR xor													DONE
+SLL shift left logical									DONE (ASSUMING T TAKES CARE OF OVERFLOW ITESELF)
+SRA shift right arithmetic								(NO CLUE WHAT TO DO)
+SRL shift right logical									DONE (ASSUMING IT TAKES CARE OF OVERFLOW ITSELF)
+SUB subtract with overflow								DONE
+SUBU subtract without overflow							DONE
+SLT set less than										DONE
+SLTI set less than immediate							DONE
+SLTU set less than unsigned								DONE
+SLTIU set less than immediate unsigned					DONE
+MFHI move from HI register								DONE
+MFLO move from LO register								DONE
