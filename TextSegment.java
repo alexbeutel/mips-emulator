@@ -30,7 +30,6 @@ public class TextSegment extends Memory {
 		//System.out.println("0x" + MIPSEmulator.formatHex(this.get(loc)));
 		//System.out.println(Integer.toBinaryString(this.get(loc)));
 		String cmd = "";
-		//not as clear division of I and J as expected, may need to combine
 		
 		// What type is it?
 		int opcode = getBits(loc, 26, 31, false);
@@ -43,8 +42,6 @@ public class TextSegment extends Memory {
 			func = getBits(loc, 0, 5, false);
 			
 			//System.out.println(rs + " -- " + rt + " -- " + rd + " -- " + shamt + " -- " + func);
-			
-			//cmd = "rtype" + func;
 			
 			switch(func) {
 				case 0: //SLL
@@ -166,24 +163,16 @@ public class TextSegment extends Memory {
 					//if $s < $t $d = 1; advance_pc (4); else $d = 0;
 					cmd = "SLT if $"+rs+"<"+rt+" then $"+rd+" = 1. Otherwise $"+rd+" = 0.";
 					if (mips.reg.get(rs) < mips.reg.get(rt))
-					{
 						mips.reg.set(rd, 1);
-					}
 					else
-					{
 						mips.reg.set(rd, 0);
-					}
 					break;
 				case 43:
 					cmd = "SLTU if $"+rs+"<"+rt+" then $"+rd+" = 1. Otherwise $"+rd+" = 0.";
 					if (mips.reg.get(rs) < mips.reg.get(rt))
-					{
 						mips.reg.set(rd, 1);
-					}
 					else
-					{
 						mips.reg.set(rd, 0);
-					}
 					break;
 				default:
 					cmd = "OTHER R INSTRUCTION -- " + opcode + " -- " + func;
@@ -264,24 +253,16 @@ public class TextSegment extends Memory {
 					//If $s is less than immediate, $t is set to one. It gets zero otherwise.
 					cmd = "SLTI if $"+rs+"<"+immed+" then $"+rt+" = 1. Otherwise $"+rt+" = 0.";
 					if (mips.reg.get(rs) < immed)
-					{
 						mips.reg.set(rt, 1);
-					}
 					else
-					{
 						mips.reg.set(rt, 0);
-					}
 					break;
 				case 11:
 					cmd = "SLTIU if $"+rs+"<"+immed+" then $"+rt+" = 1. Otherwise $"+rt+" = 0.";
 					if (mips.reg.get(rs) < immed)
-					{
 						mips.reg.set(rt, 1);
-					}
 					else
-					{
 						mips.reg.set(rt, 0);
-					}
 					break;
 				case 12:
 					cmd = "ANDI";
