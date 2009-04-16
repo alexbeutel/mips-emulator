@@ -7,7 +7,6 @@ import java.util.*;
 import java.math.*;
 public class TextSegment extends Memory {
 	public TextSegment() {
-		// CHECK SIZE & START
 		super(2*1024, 0x00400000);
 	}
 	public TextSegment(int size, int start) {
@@ -24,11 +23,7 @@ public class TextSegment extends Memory {
 	//can return values like to quit program
 	public int run(MIPSEmulator mips, boolean printCmd) {
 		int loc = mips.reg.pc;
-		// Increment PC + 4
 		mips.reg.pc += 4;
-		//System.out.println(loc);
-		//System.out.println("0x" + MIPSEmulator.formatHex(this.get(loc)));
-		//System.out.println(Integer.toBinaryString(this.get(loc)));
 		String cmd = "";
 		
 		// What type is it?
@@ -40,8 +35,6 @@ public class TextSegment extends Memory {
 			rd = getBits(loc, 11, 15, false);
 			shamt = getBits(loc, 6, 10, false);
 			func = getBits(loc, 0, 5, false);
-			
-			//System.out.println(rs + " -- " + rt + " -- " + rd + " -- " + shamt + " -- " + func);
 			
 			switch(func) {
 				case 0: //SLL
@@ -183,7 +176,6 @@ public class TextSegment extends Memory {
 			immedU = getBits(loc, 0, 15, false);
 			addr = getBits(loc, 0, 25);		// J-Type
 			addrU = getBits(loc, 0, 25, false);
-			int word, byteOffset, val;
 			switch(opcode) {
 				case 1:
 					if(rt == 1) {
@@ -200,14 +192,13 @@ public class TextSegment extends Memory {
 						}
 					}
 					break;
-				case 2: //jump
+				case 2:
 					cmd = "J "+addrU;
 					mips.reg.pc -= 4;
 					mips.reg.pc = (mips.reg.pc & 0xF0000000) | (addrU << 2);
 					break;
-				case 3: //JAL
+				case 3:
 					cmd = "JAL " + addrU;
-					// $31 = PC + 8 (or nPC + 4); PC = nPC; nPC = (PC &  0xf0000000) | (target << 2);
 					mips.reg.set(31, mips.reg.pc);
 					mips.reg.pc = (mips.reg.pc & 0xF0000000) | (addrU << 2);
 					break;
@@ -239,16 +230,15 @@ public class TextSegment extends Memory {
 						mips.reg.pc += (immed << 2);
 					}
 					break;
-				case 8: //ADDI
+				case 8:
 					cmd = "ADDI $"+rt+"=$"+rs+" + "+immed;
-					mips.reg.set(rt, mips.reg.get(rs) + immed); //make sure sign extended!
+					mips.reg.set(rt, mips.reg.get(rs) + immed);
 					break;
 				case 9:;
 					cmd = "ADDIU $"+rt+"=$"+rs+" + "+immed;
-					mips.reg.set(rt, mips.reg.get(rs) + immed); //make sure sign extended!
+					mips.reg.set(rt, mips.reg.get(rs) + immed);
 					break;
 				case 10:
-					//If $s is less than immediate, $t is set to one. It gets zero otherwise.
 					cmd = "SLTI if $"+rs+"<"+immed+" ? $"+rt+" = 1 : $"+rt+" = 0";
 					if (mips.reg.get(rs) < immed)
 						mips.reg.set(rt, 1);
@@ -267,15 +257,15 @@ public class TextSegment extends Memory {
 				case 12:
 					cmd = "ANDI";
 					break;
-				case 13: //ORI
+				case 13:
 					cmd = "ORI $"+rt+"=$"+rs+" | "+immedU;
 					mips.reg.set(rt, mips.reg.get(rs) | immedU);
 					break;
-				case 0x0F: //LUI
+				case 0x0F:
 					cmd = "LUI $" + rt + ", " + immedU;
 					mips.reg.set(rt, immedU << 16);
 					break;
-				case 0x20: //LB
+				case 0x20:
 					cmd = "LB $"+rt+" = MEM[$"+rs+" + "+immed+"]";
 					mips.reg.set(rt, mips.getMemoryByte(mips.reg.get(rs), immed, true));
 					break;

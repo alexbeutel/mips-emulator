@@ -25,6 +25,7 @@ public class MIPSEmulator {
 		//Initialize register values
 		reg.pc = instr.getStart();
 		reg.set(29, 0x7FFFEFFC);
+		reg.set(31, -1);
 		
 		String opt = getUserInput("Single step (s) or run to complete (c): ");
 		if(opt.toLowerCase().charAt(0) == 's') {
@@ -125,16 +126,6 @@ public class MIPSEmulator {
 				if (callOut == -1)
 					isDone = true;
 			}
-			/*
-			//iterate as many times as specified (once unless otherwise specified)
-			for (int i = 0; i < moveForward; i++) {
-				callOut = instr.run(this, true);
-				if (callOut == -1) {
-					isDone = true;
-					break;
-				}
-			}
-			*/
 		}
 	}
 	
@@ -299,17 +290,6 @@ public class MIPSEmulator {
 		return s;
 			
 	}
-	/*
-	public static int loadByte(int val, int start, int offset) {
-		int loc = 0;
-		if(start >= 0x10010000 && start <= 0x10010000 + 4*1024)
-			loc = start+offset;
-		if(start <= 0x7FFFEFFF && start >= 0x7FFFEFFF-2*1024)
-			loc = start - offset;
-		if(start >= 0x00400000 && start <= 0x00400000 + 2*1024)
-			l
-		return 0;
-	} */ 
 	public static void main(String[] args) {
 		// If running from command prompt, can run by: 
 		// java MIPSEmulator a.in

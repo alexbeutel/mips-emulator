@@ -65,7 +65,7 @@ public class Memory {
 		int mask = (max >>> (31-end)) & (max << start);
 		val = val & mask;
 		if(signed) {
-			val = val << (31 - end); // check this for signed
+			val = val << (31 - end);
 			return val >> (start + (31-end));
 		}
 		return val >>> start;
@@ -78,18 +78,4 @@ public class Memory {
 			}
 		}
 	}
-	/*
-	private boolean checkLength() {
-		int s = 0;
-		for(int i = 0; i < mem.size(); i++) {
-			if(s > size) return false;
-			Object o = mem.get(i);
-			if(o.getClass().equals(Integer.class))
-				s += 4;
-			else if (o.getClass().equals(String.class))
-				s += 4 * ((String)o).length();
-		}
-		return true;
-	}
-	*/
 }
