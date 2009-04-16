@@ -245,7 +245,7 @@ public class MIPSEmulator {
 		if(start >= 0x10010000 && start <= 0x10010000 + 4*1024)
 			return data.get(start+offset);
 		if(start <= 0x7FFFEFFF && start >= 0x7FFFEFFF-2*1024)
-			return stack.get(start-offset);
+			return stack.get(start+offset);
 		if(start >= 0x00400000 && start <= 0x00400000 + 2*1024)
 			return instr.get(start+offset);
 		return 0;
@@ -254,7 +254,7 @@ public class MIPSEmulator {
 		if(start >= 0x10010000 && start <= 0x10010000 + 4*1024)
 			this.data.set(start+offset, rt);
 		if(start <= 0x7FFFEFFF && start >= 0x7FFFEFFF-2*1024)
-			this.stack.set(start-offset, rt);
+			this.stack.set(start+offset, rt);
 		if(start >= 0x00400000 && start <= 0x00400000 + 2*1024)
 			this.instr.set(start+offset, rt);
 	}
