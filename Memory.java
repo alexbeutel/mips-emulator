@@ -17,6 +17,8 @@ public class Memory {
 		current = start;
 	}
 	public Integer get(Integer loc) {
+		if(mem[getRealLoc(loc)] == null)
+			return 0;
 		return mem[getRealLoc(loc)];
 	}
 	public Integer get(String s) {
