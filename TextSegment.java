@@ -300,7 +300,7 @@ public class TextSegment extends Memory {
 					break;
 			}			
 		}
-		cmd += " -- 0x" + MIPSEmulator.formatHex(this.get(loc)); //for debugging
+		//cmd += " -- 0x" + MIPSEmulator.formatHex(this.get(loc)); //for debugging
 		if(!cmd.equals("") && printCmd) System.out.println(cmd);
 		return 0;
 	}
