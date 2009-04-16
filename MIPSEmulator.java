@@ -164,7 +164,7 @@ public class MIPSEmulator {
 			this.stack.printAll();
 			return true;
 		}else if (address.equals("data")) {
-			this.stack.printAll();
+			this.data.printAll();
 			return true;
 		} else if(inputHex) {
 			try {
@@ -237,9 +237,9 @@ public class MIPSEmulator {
 			} else {
 				if(hasStartedStaticData) {
 					String[] nums = line.split(" ");
-					line = nums[1].substring(2);
-					int val = loadHex(line);
-					data.add((Integer)val);
+					int loc = loadHex(nums[0].substring(2));
+					int val = loadHex(nums[1].substring(2));
+					this.setMemory(loc, 0, val);
 				} else {
 					line = line.substring(2);
 					int val = loadHex(line);
@@ -251,7 +251,6 @@ public class MIPSEmulator {
 		in.close();
 	}
 	public int getFromMemory(int start, int offset) {
-		//int loc = start + offset;
 		if(start >= 0x10010000 && start <= 0x10010000 + 4*1024)
 			return data.get(start+offset);
 		if(start <= 0x7FFFEFFF && start >= 0x7FFFEFFF-2*1024)
@@ -270,12 +269,18 @@ public class MIPSEmulator {
 	}
 	public void setMemoryByte(int start, int offset, int val) {
 		val = Memory.getBitsFromVal(val, 0, 7, false);
-		int word = getFromMemory(start, offset);
+		int word = getFromMemory(start+offset, 0);
 		int byteOffset= (start+offset) % 4;
-		word = (Memory.getBitsFromVal(word, 31-8*byteOffset, 31, false) << (31-8*byteOffset)) | (Memory.getBitsFromVal(word, 0, 8*(4-byteOffset), false));
+		word = (Memory.getBitsFromVal(word, 31-8*byteOffset, 31, false) << (31-8*byteOffset)) | (Memory.getBitsFromVal(word, 0, 7*(3-byteOffset), false));
 		//word = Memory.getBitsFromVal(word, 8, 31, false) << 8;
-		int newVal = word | val;
-		this.setMemory(start, offset, newVal);
+		int newVal = word | (val<<(8*(3-byteOffset)));
+		this.setMemory(start+offset, 0, newVal);
+	}
+	public int getMemoryByte(int start, int offset, boolean signed) {
+		int word = getFromMemory(start, offset);
+		int byteOffset = (start+offset) % 4;
+		int val = Memory.getBitsFromVal(word,24-8*byteOffset,31-8*byteOffset, signed);
+		return val;
 	}
 	public static int loadHex(String s) throws NumberFormatException {
 		int full = 0;
