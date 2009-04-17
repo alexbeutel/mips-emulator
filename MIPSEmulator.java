@@ -39,16 +39,28 @@ public class MIPSEmulator {
 		this("");
 	}
 	
-	//easier to call than sys out
+	/**
+	 * Helper function to output to commandline
+	 * @param	s		Message to be output
+	 * @param	newLine	Whether or not to use print or prinln
+	 */
 	public static void out(String s, boolean newLine) {
 		if(newLine) System.out.println(s);
 		else System.out.print(s);
 	}
+	/**
+	 * Overloaded function for out, assumes to print a new line
+	 * @param s
+	 */
 	public static void out(String s) {
 		out(s, true);
 	}
 	
-	//Helper function for user input
+	/**
+	 * Static function to output a message and wait for user input
+	 * @param message message to output before user input
+	 * @return the user inputted string
+	 */
 	public static String getUserInput(String message) {
 		System.out.print(message);
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -62,6 +74,10 @@ public class MIPSEmulator {
 		return ret;
 	}
 	
+	/**
+	 * Run all commands loaded into MIPS until program is over
+	 * Do not display commands as they are runs
+	 */
 	private void runToCompletion() {
 		int callOut = 0;
 		// -1 means program is done
@@ -69,7 +85,11 @@ public class MIPSEmulator {
 			callOut = instr.run(this, false);
 		}
 	}
-	
+	/**
+	 * Run MIPS Emulator in single step mode
+	 * Display commands as they are run, among other features
+	 * Type h (for help) in this mode to see details of commands
+	 */
 	public void singleStep() {
 		int callOut = 0;
 		boolean isDone = false;
@@ -128,13 +148,19 @@ public class MIPSEmulator {
 			}
 		}
 	}
-	
+	/**
+	 * Command used to keep screen cleared except for current and last command.
+	 */
 	private void clrscr() {
 		for(int i = 0; i < 100; i++) {
 			out("\n");
 		}
 	}
-	
+	/**
+	 * Parse instruction input if it is command involving memory
+	 * @param instruction input from user
+	 * @return boolean for if there was an error in the command
+	 */
 	private boolean dInstruction(String instruction) {
 		if(instruction.length() <= 2) return false;
 		String[] parts = instruction.split("\\s+");
@@ -184,6 +210,11 @@ public class MIPSEmulator {
 		return true;
 	}
 	
+	/**
+	 * Parse instruction input if it is command involving registers
+	 * @param instruction input from user
+	 * @return boolean for if there was an error in the command
+	 */
 	private boolean pInstruction(String instruction) {
 		if(instruction.length() <= 2) return false;
 		String spec = instruction.substring(2);
@@ -203,17 +234,27 @@ public class MIPSEmulator {
 			return false;
 		return true;
 	}
+	/**
+	 * Display command help
+	 */
 	private void outputHelp() {
 		out("p [#/HI/LO/PC/all] - print registers either specific #, hi, lo, pc, or all registers");
 		out("d [#/data/stack] - print memory at specific location, default takes a decimal int\n\t-h : take in hex\n\t-oh : output hex\n\t-ob : output binary");
 		out("s # - execute next # instructions (# is decimal)");
 		out("q - quit");
 	}
+	/**
+	 * Output message if error in user inputted command
+	 */
 	private void invalidCommand() {
 		out("Sorry you typed in an invalid command");
 	}	
 	
-	//Load instructions and static data from file into data and instr objects
+	/**
+	 * Load instructions and static data from file into data and instr objects
+	 * @param filename file to read for hexadecimal formatted commands and data
+	 * @throws IOException throws exception in case of error reading the file
+	 */
 	public void loadFile(String filename) throws IOException {
 		System.out.println("load file");
 		BufferedReader in = new BufferedReader(new FileReader(filename));
@@ -241,6 +282,13 @@ public class MIPSEmulator {
 		}
 		in.close();
 	}
+	/**
+	 * Get a value from memory
+	 * Chooses which block of memory to read from based on memory address
+	 * @param start Location in memory from which to offset from
+	 * @param offset Offset in memory
+	 * @return 32 bit (4 bytes) integer read from memory
+	 */
 	public int getFromMemory(int start, int offset) {
 		if(start >= 0x10010000 && start <= 0x10010000 + 4*1024)
 			return data.get(start+offset);
@@ -250,6 +298,12 @@ public class MIPSEmulator {
 			return instr.get(start+offset);
 		return 0;
 	}
+	/**
+	 * Set one word, 4 bytes, in memory
+	 * @param start Location in memory from which to offset from
+	 * @param offset Offset in memory
+	 * @param rt 32 bit (4 bytes) integer to set in memory
+	 */
 	public void setMemory(int start,int offset, int rt) {
 		if(start >= 0x10010000 && start <= 0x10010000 + 4*1024)
 			this.data.set(start+offset, rt);
@@ -258,6 +312,12 @@ public class MIPSEmulator {
 		if(start >= 0x00400000 && start <= 0x00400000 + 2*1024)
 			this.instr.set(start+offset, rt);
 	}
+	/**
+	 * Set a byte of memory to given value
+	 * @param start Location in memory to set
+	 * @param offset Offset from the start location
+	 * @param val 8 bit value to be saved
+	 */
 	public void setMemoryByte(int start, int offset, int val) {
 		val = Memory.getBitsFromVal(val, 0, 7, false);
 		int word = getFromMemory(start+offset, 0);
@@ -267,12 +327,26 @@ public class MIPSEmulator {
 		int newVal = word | (val<<(8*(3-byteOffset)));
 		this.setMemory(start+offset, 0, newVal);
 	}
+	/**
+	 * Read 8 bits from memory
+	 * @param start Memory location
+	 * @param offset Optoinal offset from memory location
+	 * @param signed Take the byte as a signed or unsigned value
+	 * @return the value at the given location byte is returned as an int
+	 */
 	public int getMemoryByte(int start, int offset, boolean signed) {
 		int word = getFromMemory(start, offset);
 		int byteOffset = (start+offset) % 4;
 		int val = Memory.getBitsFromVal(word,24-8*byteOffset,31-8*byteOffset, signed);
 		return val;
 	}
+	/**
+	 * Read a hexidecimal string
+	 * Can't use parseInt because it fails for 8 character values
+	 * @param s String to be parsed
+	 * @return int value from inputted hexadecimal string
+	 * @throws NumberFormatException throws exception if not a true hex string
+	 */
 	public static int loadHex(String s) throws NumberFormatException {
 		int full = 0;
 		for(int i = 0; i < s.length(); i++) {
@@ -282,6 +356,12 @@ public class MIPSEmulator {
 		}
 		return full;
 	}
+	/**
+	 * Format an int to be output as hexidecimal
+	 * similar to Integer.toHexString() but always 8 characters long
+	 * @param n 32 bit integer to be output as hex
+	 * @return a string of 8 uppercase hexadecimal characters
+	 */
 	public static String formatHex(int n) {
 		String s = Integer.toHexString(n).toUpperCase();
 		while(s.length() < 8) {
@@ -290,10 +370,13 @@ public class MIPSEmulator {
 		return s;
 			
 	}
+	/**
+	 * If running from command prompt, can run by: 
+	 * java MIPSEmulator a.in
+	 * Otherwise will ask for a filename
+	 * @param args optional first argument can be the filename to bread
+	 */
 	public static void main(String[] args) {
-		// If running from command prompt, can run by: 
-		// java MIPSEmulator a.in
-		// Otherwise will ask for a filename
 		String s = "";
 		if(args.length > 0)
 			s = args[0];
