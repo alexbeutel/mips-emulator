@@ -1,4 +1,4 @@
-/*
+/**
  * Class for TextSegment memory
  * Holds instructions
  */
@@ -6,21 +6,36 @@
 import java.util.*;
 import java.math.*;
 public class TextSegment extends Memory {
+	/**
+	 * Initialized to 2 KB starting at 0x00400000
+	 */
 	public TextSegment() {
 		super(2*1024, 0x00400000);
 	}
 	public TextSegment(int size, int start) {
 		super(size, start);
 	}
+	/**
+	 * Throw text segment specific overflow error message
+	 */
 	protected void throwOverflowError() {
 		System.out.println("Your text segment memory is full");
 	}
-	
+	/**
+	 * Get starting value
+	 * @return return starting location of memory (byte address)
+	 */
 	public int getStart() {
 		return this.start;
 	}
 	
-	//can return values like to quit program
+	/**
+	 * Runs given command from text segment memory
+	 * Increments pc by 4 when appropriate
+	 * @param mips Give mips object so can access other memory locations and registers
+	 * @param printCmd boolean determining whether or not to print the command that was executed
+	 * @return int, -1 when program is done, 0 otherwise
+	 */
 	public int run(MIPSEmulator mips, boolean printCmd) {
 		int loc = mips.reg.pc;
 		mips.reg.pc += 4;
