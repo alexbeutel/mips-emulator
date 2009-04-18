@@ -1,10 +1,9 @@
+import java.util.*;
+import java.math.*;
 /**
  * Class for TextSegment memory
  * Holds instructions
  */
-
-import java.util.*;
-import java.math.*;
 public class TextSegment extends Memory {
 	/**
 	 * Initialized to 2 KB starting at 0x00400000

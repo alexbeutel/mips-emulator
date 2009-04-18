@@ -1,5 +1,9 @@
 import java.util.*;
 import java.io.*;
+/**
+ * Main class for holding all objects, I/O, and giving directions
+ *
+ */
 public class MIPSEmulator {
 	public Register reg;
 	public DataSegment data;

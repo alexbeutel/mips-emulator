@@ -1,4 +1,8 @@
 import java.util.*;
+/**
+ * Object for holding all registers and associated methods
+ *
+ */
 public class Register {
 	public int[] r;
 	public int HI, LO, pc;

@@ -3,7 +3,6 @@ import java.util.*;
  * A genreal super class to be used to implement memory segments
  * For all practical purposes could be called as an abstract class,
  * but has enough methods to be instantiated and used.
- * @author amb79
  */
 public class Memory {
 	protected Integer[] mem;
