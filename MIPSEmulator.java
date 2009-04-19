@@ -28,8 +28,11 @@ public class MIPSEmulator {
 		
 		//Initialize register values
 		reg.pc = instr.getStart();
-		reg.set(29, 0x7FFFEFFC);
-		reg.set(31, -1);
+		reg.set(29, 0x7FFFEFFC); //initialize $sp
+		reg.set(31, -1); // $ra so as to know when to end the program (on jr -1)
+		reg.set(28, 0x10011000); // set $gp
+		reg.set(30, 0x7FFFEFFC); // set $fp (not sure if right but never really used)
+		
 		
 		String opt = getUserInput("Single step (s) or run to complete (c): ");
 		if(opt.toLowerCase().charAt(0) == 's') {

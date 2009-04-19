@@ -1,6 +1,6 @@
 import java.util.*;
 /**
- * A genreal super class to be used to implement memory segments
+ * A general super class to be used to implement memory segments
  * For all practical purposes could be called as an abstract class,
  * but has enough methods to be instantiated and used.
  */
@@ -51,7 +51,7 @@ public class Memory {
 	/**
 	 * Set based on hexadecimal location
 	 * @param s Hexadecimal string
-	 * @param o intput value
+	 * @param o input value
 	 */
 	public void set(String s, int o) {
 		set(MIPSEmulator.loadHex(s), o);
