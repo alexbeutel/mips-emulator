@@ -9,6 +9,8 @@ public class MIPSEmulator {
 	public DataSegment data;
 	public TextSegment instr;
 	public StackSegment stack;
+	
+	//Constructor - all executed during object instantiation
 	public MIPSEmulator(String s) {
 		reg = new Register();
 		data = new DataSegment();
