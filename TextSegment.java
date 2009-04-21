@@ -40,7 +40,7 @@ public class TextSegment extends Memory {
 		mips.reg.pc += 4;
 		String cmd = "";
 		
-		// What type is it?
+		// Figure out what type it is
 		int opcode = getBits(loc, 26, 31, false);
 		int rs, rt, rd, immed, shamt, func, addr, immedU, addrU;
 		if(opcode == 0) { //R-Type

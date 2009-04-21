@@ -33,7 +33,7 @@ public class Memory {
 		return mem[getRealLoc(loc)];
 	}
 	/**
-	 * Get based on hex value
+	 * Accessor method based on hex value
 	 * @param s hexadecimal string of location
 	 * @return 4 bytes at that location
 	 */
@@ -43,7 +43,7 @@ public class Memory {
 	/**
 	 * Set word at given location
 	 * @param loc Memory location
-	 * @param o int to put into the location
+	 * @param o integer to put into the location
 	 */
 	public void set(int loc, int o) {
 		mem[getRealLoc(loc)] = o;
@@ -86,7 +86,7 @@ public class Memory {
 	}
 	/**
 	 * Get specific bits from a memory location
-	 * @param loc Memory locatino to pull from
+	 * @param loc Memory location to pull from
 	 * @param start starting bit value
 	 * @param end end bit value
 	 * @param signed Boolean for whether or not to sign extend
@@ -103,7 +103,7 @@ public class Memory {
 	}
 	/**
 	 * Overload if signed term is left out, then sign extend
-	 * @param loc Memory locatino to pull from
+	 * @param loc Memory location to pull from
 	 * @param start starting bit value
 	 * @param end end bit value
 	 * @return Requested bits in an int
@@ -116,7 +116,7 @@ public class Memory {
 	 * @param val Value to take bits from
 	 * @param start starting bit value
 	 * @param end ending bit value
-	 * @param signed boolean for whether or not to signe extend
+	 * @param signed boolean for whether or not to sign extend
 	 * @return requested bits as an int
 	 */
 	public static int getBitsFromVal(int val, int start, int end,  boolean signed) {
@@ -130,7 +130,7 @@ public class Memory {
 		return val >>> start;
 	}
 	/**
-	 * Print all memory locations with a value that is not 0 nor null.
+	 * Print all memory locations with a value that is not 0 or null.
 	 */
 	public void printAll() {
 		for(int i = 0; i < mem.length; i++) {

@@ -49,16 +49,16 @@ public class MIPSEmulator {
 	}
 	
 	/**
-	 * Helper function to output to commandline
+	 * Helper function to output to command line
 	 * @param	s		Message to be output
-	 * @param	newLine	Whether or not to use print or prinln
+	 * @param	newLine	Whether or not to use print or println
 	 */
 	public static void out(String s, boolean newLine) {
 		if(newLine) System.out.println(s);
 		else System.out.print(s);
 	}
 	/**
-	 * Overloaded function for out, assumes to print a new line
+	 * Overloaded function for out, assumes that we want to print a new line
 	 * @param s
 	 */
 	public static void out(String s) {
@@ -68,7 +68,7 @@ public class MIPSEmulator {
 	/**
 	 * Static function to output a message and wait for user input
 	 * @param message message to output before user input
-	 * @return the user inputted string
+	 * @return the user inputed string
 	 */
 	public static String getUserInput(String message) {
 		System.out.print(message);
@@ -85,7 +85,7 @@ public class MIPSEmulator {
 	
 	/**
 	 * Run all commands loaded into MIPS until program is over
-	 * Do not display commands as they are runs
+	 * Do not display commands as they are run
 	 */
 	private void runToCompletion() {
 		int callOut = 0;
@@ -253,7 +253,7 @@ public class MIPSEmulator {
 		out("q - quit");
 	}
 	/**
-	 * Output message if error in user inputted command
+	 * Output message if error in user inputed command
 	 */
 	private void invalidCommand() {
 		out("Sorry you typed in an invalid command");
@@ -339,7 +339,7 @@ public class MIPSEmulator {
 	/**
 	 * Read 8 bits from memory
 	 * @param start Memory location
-	 * @param offset Optoinal offset from memory location
+	 * @param offset Optional offset from memory location
 	 * @param signed Take the byte as a signed or unsigned value
 	 * @return the value at the given location byte is returned as an int
 	 */
@@ -353,7 +353,7 @@ public class MIPSEmulator {
 	 * Read a hexidecimal string
 	 * Can't use parseInt because it fails for 8 character values
 	 * @param s String to be parsed
-	 * @return int value from inputted hexadecimal string
+	 * @return int value from inputed hexadecimal string
 	 * @throws NumberFormatException throws exception if not a true hex string
 	 */
 	public static int loadHex(String s) throws NumberFormatException {

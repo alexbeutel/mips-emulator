@@ -1,8 +1,8 @@
 Alex:
-LB load byte											DONE but needs testing
-LBU load byte unsigned									DONE but needs testing
+LB load byte											DONE
+LBU load byte unsigned									DONE
 LW load word											DONE
-SB store byte											DONE but needs testing
+SB store byte											DONE
 SW store word											DONE
 LUI load upper immediate								DONE
 BEQ branch on equal										DONE
@@ -14,7 +14,7 @@ BNE branch on not equal									DONE
 J jump													DONE
 JAL jump and link										DONE
 JR jump register										DONE
-SYSCALL (implement syscall code 1,4,5,8,10)				DONE but needs testing
+SYSCALL (implement syscall code 1,4,5,8,10)				DONE
 
 Nikhil:
 ADD add (with overflow)									DONE
@@ -27,9 +27,9 @@ MULTU unsigned multiply									DONE
 OR or													DONE
 ORI or immediate										DONE
 XOR xor													DONE
-SLL shift left logical									DONE (ASSUMING T TAKES CARE OF OVERFLOW ITESELF)
-SRA shift right arithmetic								(NO CLUE WHAT TO DO)
-SRL shift right logical									DONE (ASSUMING IT TAKES CARE OF OVERFLOW ITSELF)
+SLL shift left logical									DONE
+SRA shift right arithmetic								DONE
+SRL shift right logical									DONE
 SUB subtract with overflow								DONE
 SUBU subtract without overflow							DONE
 SLT set less than										DONE

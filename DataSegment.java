@@ -15,7 +15,7 @@ public class DataSegment extends Memory {
 		super(size, start);
 	}
 	/**
-	 * Throw data segment specifc overflow error
+	 * Throw data segment specific overflow error
 	 */
 	protected void throwOverflowError() {
 		System.out.println("Your static data segment memory is full");

@@ -28,7 +28,7 @@ public class Register {
 	/**
 	 * Given a string name of a register (hi, lo, or pc) return that register
 	 * @param type Register name
-	 * @return 4 byte value in register (int)
+	 * @return 4 byte value from register (int)
 	 */
 	public int get(String type){
 		if (type.toLowerCase().equals("hi"))
