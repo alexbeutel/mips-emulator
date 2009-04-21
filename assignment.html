@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+
+ 
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ 
+  <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+ 
+  <meta name="ProgId" content="FrontPage.Editor.Document">
+  <title>CPS 104 MIPS Simulator</title>
+</head><body>
+  <font face="Times New Roman" size="2"></font><font face="Times New Roman" size="5">
+<h1 align="center"><b><font color="#0000ff">Computer Science 104 MIPS Emulator</font></b></h1>
+</font><font face="Times New Roman" size="5"></font><b><font face="Times New Roman" size="4"> 
+<p>1 Description</p>
+</font></b><font face="Times New Roman" size="3"> </font> 
+<p><font face="Times New Roman" size="3">Write a program (C, C++, or Java) that 
+  simulates the execution of a MIPS program. Your simulator will read a "binary"</font> 
+  <font face="Times New Roman" size="3">file that contains hexadecimal representations 
+  of the text and initialized data segments (see Section 2). The program</font> 
+  <font face="Times New Roman" size="3">will utilize only a subset of the MIPS 
+  R2000 instruction set (see Section 3). Your simulator should provide</font> 
+  <font face="Times New Roman" size="3">two modes: single step and run-to-completion. 
+  During single-step you should be able to print out the value of a</font> <font face="Times New Roman" size="3">specified 
+  register or to print all registers (see Section 4 for more details on the interface). 
+  In general, your program</font> <font face="Times New Roman" size="3">will perform 
+  the fetch execute cycle, reading instructions from memory, decoding them, and 
+  performing the appropriate</font> <font face="Times New Roman" size="3">operation 
+  on "simulated" registers and/or memory.</font></p>
+ 
+<p><font face="Times New Roman" size="3">You will do two things to test your
+simulator. First,  you will run a "<a href="http://www.cs.duke.edu/courses/spring09/cps104/homework/torture.s">torture test</a>
+                 " program that&nbsp;we provide. Running</font> <font face="Times New Roman" size="3">
+this program in single step mode will help isolate problems. You&nbsp;should also
+write some&nbsp;test programs on your own to test</font> <font face="Times New Roman" size="3">
+  your simulator, and compare the results with spim. Section 5 provides more
+information on what to turn in.</font> <font face="Times New Roman" size="3">
+Monitor the  course newsgroup and web page frequently for information regarding
+this  project.</font></p>
+ <b><font face="Times New Roman"> 
+<p>1.1 Memory Allocation</p>
+ </font></b><font face="Times New Roman" size="3"> </font>
+<p><font face="Times New Roman" size="3">Although we have reasoned about
+memory as a single linear array in class, you can not allocate memory in
+your</font> <font face="Times New Roman" size="3">  simulator as a single
+array. Instead, you should allocate three separate arrays for the text, static
+data</font> <font face="Times New Roman" size="3">and stack segment, respectively.
+You must read the instructions and static (initialized) data from the "binary"
+file into the corresponding simulator array. You can assume the text segment
+will not exceed 2 kilobytes (2*1024), the</font> <font face="Times New Roman" size="3">
+         static data segment will not exceed 4 kilobytes, and the</font>
+<font face="Times New Roman" size="3">stack segment will not exceed 2 kilobytes.
+Be sure to consider that from the program's perspective, the text segment</font>
+ <font face="Times New Roman" size="3">   begins at address 0x00400000 and
+the static data segment begins at address 0x10010000.</font></p>
+ 
+<p><font face="Times New Roman" size="3">The program expects a valid stack 
+pointer at address 0x7fffefff, (so the first valid aligned stack address
+is</font> <font face="Times New Roman" size="3">0x7fffeffc, which is the
+value the stack pointer should have when the program begins execution). When
+the program</font> <font face="Times New Roman" size="3">accesses one of
+these segments, you must compute the appropriate offset into your "simulated"
+segment.</font></p>
+<b><font face="Times New Roman" size="4"> 
+<p>2 MIPS Binary File</p>
+ </font><font face="Times New Roman"> 
+<p>2.1 Generating the Binary File</p>
+ 
+</font></b><font face="Times New Roman" size="3"> </font> 
+<p><font face="Times New Roman" size="3">To generate the binary files from your 
+  assembly programs, use the command "/afs/acpub/project/cps/bin/spimlist -notrap 
+  -file file.s &gt; hex.out" on the ACPUB Suns (godzilla.acpub.duke.edu);</font> 
+  <font face="Times New Roman" size="3">this will create a file always called 
+  hex.out in the directory where you executed the command. The file hex.out contains</font> 
+  <font face="Times New Roman" size="3">the hex equivalent in the format described 
+  below.</font></p>
+ <b><font face="Times New Roman"> 
+<p>2.2 Binary File Format</p>
+ </font></b><font face="Times New Roman" size="3"> </font>
+<p><font face="Times New Roman" size="3">The binary files will have a marker
+(DATA SEGMENT) that indicates where the code (text) segment ends and</font>
+ <font face="Times New Roman" size="3">the static data segment begins you
+need to jump to loading the data into address 0x10010000 at that point. Also,</font>
+ <font face="Times New Roman" size="3">since I don't want to include all
+4K entries of the static data segment, I only list those which are not 0;
+I list their</font> <font face="Times New Roman" size="3">addresses followed
+by the data in word-aligned format. As an example, the assembly program "sum.s",
+which computes</font> <font face="Times New Roman" size="3">the sum  of 9
+numbers, lists as follows (see the code section of the course web page for
+the source of "sum.s", note that pseudoinstructions are translated into actual
+instructions):</font></p>
+ <font face="Times New Roman" size="2"></font><font face="Times New Roman" size="3">
+ </font>
+<p><font face="Times New Roman" size="3">0x27bdffd8<br>
+ 0xafbf0024<br>
+ 0xafb30020<br>
+ 0xafb2001c<br>
+ 0xafb10018<br>
+ 0xafb00014<br>
+ 0x00001021<br>
+ 0x00008821<br>
+ 0x3c011001<br>
+ 0x34300000<br>
+ 0x3c011001<br>
+ 0x34320024<br>
+ 0x3c011001<br>
+ 0x34330024<br>
+ 0x8e0e0000<br>
+ 0x022e8821<br>
+ 0x34020004<br>
+ 0x00122021<br>
+ 0x0000000c<br>
+ 0x34020001<br>
+ 0x00112021<br>
+ 0x0000000c<br>
+ 0x34020004<br>
+ 0x3c011001<br>
+ 0x34240030<br>
+ 0x0000000c<br>
+ 0x26100004<br>
+ 0x1613fff3<br>
+ 0x00001021<br>
+ 0x8fb00014<br>
+ 0x8fb10018<br>
+ 0x8fb2001c<br>
+ 0x8fb30020<br>
+ 0x8fbf0024<br>
+ 0x27bd0028<br>
+ 0x03e00008<br>
+ DATA SEGMENT<br>
+ 0x10010000 0x00000023<br>
+ 0x10010004 0x00000010<br>
+ 0x10010008 0x0000002a<br>
+ 0x1001000c 0x00000013<br>
+ 0x10010010 0x00000037<br>
+ 0x10010014 0x0000005b<br>
+ 0x10010018 0x00000018<br>
+ 0x1001001c 0x0000003d<br>
+ 0x10010020 0x00000035<br>
+ 0x10010024 0x54686520<br>
+ 0x10010028 0x73756d20<br>
+ 0x1001002c 0x69732000<br>
+ 0x10010030 0x0a000000</font></p>
+ <font face="Times New Roman" size="3"><b><font face="Times New Roman" size="4">
+ 
+<p>3 Instructions you must Simulate</p>
+ </font></b> </font>
+<p><font face="Times New Roman" size="3">Below is the complete list of instructions
+that you must correctly simulate. Notice there are no floating point or</font>
+ <font face="Times New Roman" size="3"> coprocessor instructions, but syscall
+is a requirement. As you are simulating actual hardware, you will not simulate</font>
+ <font face="Times New Roman" size="3">pseudoinstructions (like LI: load
+immediate, or MOVE) which are translated by the assembler into actual</font>
+ <font face="Times New Roman" size="3">instructions (usually ORI: or immediate
+in the case of LI) - you will only simulate "real" instructions that have
+an</font> <font face="Times New Roman" size="3">opcode. In your programs,
+you can continue to use pseudoinstructions, as the assembler will continue
+to make all</font> <font face="Times New Roman" size="3">the  translations
+SPIM would make. Use Appendix A to obtain the corresponding  OPCODES, and
+instruction formats.</font></p>
+ 
+<p><font face="Times New Roman" size="3">You do not need to simulate the
+actual hardware execution of each individual operation. For example, to simulate</font>
+ <font face="Times New Roman" size="3">ADD r3, r4, r5, you can use the +
+operator in C++, to perform r3 = r4 + r5, where r3, r4, &amp; r5 are "simulated"</font>
+ <font face="Times New Roman" size="3">registers. Similarly, *, /, -, ^,
+&lt;&lt;, &gt;&gt;, etc.,  can be used to "simulate" instruction execution.</font></p>
+ 
+<p><font face="Times New Roman" size="3">Instructions you must simulate:</font></p>
+ 
+<p><font face="Times New Roman" size="3">LB load byte<br>
+ LBU load byte unsigned<br>
+ LW load word<br>
+ SB store byte<br>
+ SW store word<br>
+ LUI load upper immediate<br>
+ ADD add<br>
+ ADDI add immediate<br>
+ ADDU add without overflow<br>
+ ADDIU add immediate without overflow<br>
+ AND and<br>
+ MULT multiply<br>
+ MULTU unsigned multiply<br>
+ OR or<br>
+ ORI or immediate<br>
+  XOR xor<br>
+ SLL shift left logical<br>
+ SRA shift right arithmetic<br>
+ SRL shift right logical<br>
+ SUB subtract with overflow<br>
+ SUBU subtract without overflow<br>
+ SLT set less than<br>
+ SLTI set less than immediate<br>
+ SLTU set less than unsigned<br>
+ SLTIU set less than immediate unsigned<br>
+ BEQ branch on equal<br>
+ BGEZ branch on greater than equal zero<br>
+ BGTZ branch on greater than zero<br>
+ BLEZ branch on less than equal zero<br>
+ BLTZ branch on less than zero<br>
+ BNE branch on not equal<br>
+ J jump<br>
+ JAL jump and link<br>
+ JR jump register<br>
+ MFHI move from HI register<br>
+ MFLO move from LO register<br>
+ SYSCALL system call-like facilities that SPIM programs can use (implement
+syscall code 1,4,5,8,10) </font></p>
+ <b><font face="Times New Roman" size="4"> 
+<p>4 Command Line Interface</p>
+ </font></b><font face="Times New Roman" size="3"> </font>
+<p><font face="Times New Roman" size="3">Your simulator must provide two
+modes of operation: single step, and run to completion. Programs terminate
+by</font> <font face="Times New Roman" size="3">using the </font><i><font face="Times New Roman" size="3">
+exit syscall</font></i><font face="Times New Roman" size="3">. In single
+step mode, your simulator should print the assembly representation of the
+instruction</font> <font face="Times New Roman" size="3">that  will be executed.
+Also, in single step mode you must support the following  commands:</font></p>
+ 
+<p><font face="Times New Roman" size="3"><b>p </b></font><i><font face="Times New Roman" size="3"><b>
+reg</b> </font></i><font face="Times New Roman" size="3">print a specific
+register (e.g., p 4, prints the contents in hex of register 4)<br>
+ <b>p </b></font><b><i><font face="Times New Roman" size="3">all </font></i></b><font face="Times New Roman" size="3">
+print the contents of all registers, including the PC, HI, &amp; LO in hex<br>
+ <b>d </b></font><i><font face="Times New Roman" size="3"><b>addr</b> </font></i><font face="Times New Roman" size="3">
+print the contents of memory location </font><i><font face="Times New Roman" size="3">
+addr </font></i><font face="Times New Roman" size="3">in hex, assume </font><i><font face="Times New Roman" size="3">
+addr </font></i><font face="Times New Roman" size="3">is a word address in
+hex.<br>
+ <b>s </b></font><i><font face="Times New Roman" size="3"><b>n</b> </font></i><font face="Times New Roman" size="3">
+execute the next n instructions and stop (should print each  instruction
+executed), then wait for the user to input another  command </font></p>
+ 
+<p><font face="Times New Roman" size="3"><strong><font size="4">5&nbsp;What to
+Hand  In</font></strong> </font></p>
+ 
+<p><font face="Times New Roman" size="3"><font face="Times New Roman" size="3">
+You should submit your program source file, the Makefile  (if necessary),
+and a README&nbsp;a brief&nbsp;description of principles behind  design,&nbsp;<font color="#ff0000">
+each team members' contribution, </font><font color="#000000">and anything
+you feel that you would like us  to know when grading.&nbsp; The submit name is
+<strong>sim</strong>             .<br>
+</font>              </font></font></p>
+</body></html>
